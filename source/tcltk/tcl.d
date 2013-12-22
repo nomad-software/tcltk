@@ -374,9 +374,9 @@ alias extern(C) int function(ClientData clientData, Tcl_Interp* interp, int code
 alias extern(C) void function(ClientData clientData, int mask) nothrow Tcl_ChannelProc;
 alias extern(C) void function(ClientData data) nothrow Tcl_CloseProc;
 alias extern(C) void function(ClientData clientData) nothrow Tcl_CmdDeleteProc;
-alias extern(C) int function(ClientData clientData, Tcl_Interp* interp, int argc, const(char)* argv[]) nothrow Tcl_CmdProc;
-alias extern(C) void function(ClientData clientData, Tcl_Interp* interp, int level, const(char)* command, Tcl_CmdProc proc, ClientData cmdClientData, int argc, const(char)* argv[]) nothrow Tcl_CmdTraceProc;
-alias extern(C) int function(ClientData clientData, Tcl_Interp* interp, int level, const(char)* command, Tcl_Command commandInfo, int objc, const Tcl_Obj[]* objv) nothrow Tcl_CmdObjTraceProc;
+alias extern(C) int function(ClientData clientData, Tcl_Interp* interp, int argc, const(char)** argv) nothrow Tcl_CmdProc;
+alias extern(C) void function(ClientData clientData, Tcl_Interp* interp, int level, const(char)* command, Tcl_CmdProc proc, ClientData cmdClientData, int argc, const(char)** argv) nothrow Tcl_CmdTraceProc;
+alias extern(C) int function(ClientData clientData, Tcl_Interp* interp, int level, const(char)* command, Tcl_Command commandInfo, int objc, const(Tcl_Obj*)* objv) nothrow Tcl_CmdObjTraceProc;
 alias extern(C) void function(ClientData clientData) nothrow Tcl_CmdObjTraceDeleteProc;
 alias extern(C) void function(Tcl_Obj* srcPtr, Tcl_Obj* dupPtr) nothrow Tcl_DupInternalRepProc;
 alias extern(C) int function(ClientData clientData, const(char)* src, int srcLen, int flags, Tcl_EncodingState* statePtr, const(char)* dst, int dstLen, int* srcReadPtr, int* dstWrotePtr, int* dstCharsPtr) nothrow Tcl_EncodingConvertProc;
@@ -394,7 +394,7 @@ alias extern(C) void function(ClientData clientData) nothrow Tcl_IdleProc;
 alias extern(C) void function(ClientData clientData, Tcl_Interp* interp) nothrow Tcl_InterpDeleteProc;
 alias extern(C) int function(ClientData clientData, Tcl_Interp* interp, Tcl_Value* args, Tcl_Value* resultPtr) nothrow Tcl_MathProc;
 alias extern(C) void function(ClientData clientData) nothrow Tcl_NamespaceDeleteProc;
-alias extern(C) int function(ClientData clientData, Tcl_Interp* interp, int objc, const Tcl_Obj[]* objv) nothrow Tcl_ObjCmdProc;
+alias extern(C) int function(ClientData clientData, Tcl_Interp* interp, int objc, const(Tcl_Obj*)* objv) nothrow Tcl_ObjCmdProc;
 alias extern(C) int function(Tcl_Interp* interp) nothrow Tcl_PackageInitProc;
 alias extern(C) int function(Tcl_Interp* interp, int flags) nothrow Tcl_PackageUnloadProc;
 alias extern(C) void function(const(char)* format, ...) nothrow Tcl_PanicProc;
@@ -1335,7 +1335,7 @@ struct utimbuf;
 alias extern(C) int function(Tcl_Obj* pathPtr, utimbuf* tval) nothrow Tcl_FSUtimeProc;
 alias extern(C) int function(Tcl_Interp* interp, Tcl_Obj* pathPtr, int nextCheckpoint) nothrow Tcl_FSNormalizePathProc;
 alias extern(C) int function(Tcl_Interp* interp, int index, Tcl_Obj* pathPtr, Tcl_Obj** objPtrRef) nothrow Tcl_FSFileAttrsGetProc;
-alias extern(C) const(char)[]* function(Tcl_Obj* pathPtr, Tcl_Obj** objPtrRef) nothrow Tcl_FSFileAttrStringsProc;
+alias extern(C) const(char)** function(Tcl_Obj* pathPtr, Tcl_Obj** objPtrRef) nothrow Tcl_FSFileAttrStringsProc;
 alias extern(C) int function(Tcl_Interp* interp, int index, Tcl_Obj* pathPtr, Tcl_Obj* objPtr) nothrow Tcl_FSFileAttrsSetProc;
 alias extern(C) Tcl_Obj* function(Tcl_Obj* pathPtr, Tcl_Obj* toPtr, int linkType) nothrow Tcl_FSLinkProc;
 alias extern(C) int function(Tcl_Interp* interp, Tcl_Obj* pathPtr, Tcl_LoadHandle* handlePtr, Tcl_FSUnloadFileProc unloadProcPtr) nothrow Tcl_FSLoadFileProc;
@@ -1988,7 +1988,7 @@ extern(C) const(char)* TclTomMathInitializeStubs(Tcl_Interp* interp, const(char)
  * Public functions that are not accessible via the stubs table.
  * Tcl_GetMemoryInfo is needed for AOLserver. [Bug 1868171]
  */
-extern(C) void Tcl_Main(int argc, const(char)[]* argv, Tcl_AppInitProc appInitProc) nothrow;
+extern(C) void Tcl_Main(int argc, const(char)** argv, Tcl_AppInitProc appInitProc) nothrow;
 extern(C) const(char)* Tcl_PkgInitStubsCheck(Tcl_Interp* interp, const(char)* version_, int exact) nothrow;
 extern(C) void Tcl_GetMemoryInfo(Tcl_DString* dsPtr) nothrow;
 
@@ -2150,7 +2150,7 @@ version(TCL_MEM_DEBUG)
 		return Tcl_DbNewLongObj(intValue, cast(char*)file.toStringz, cast(int)line);
 	}
 
-	Tcl_Obj* Tcl_NewListObj(int objc, const Tcl_Obj[]* objv, string file = __FILE__, size_t line = __LINE__) nothrow
+	Tcl_Obj* Tcl_NewListObj(int objc, const(Tcl_Obj*)* objv, string file = __FILE__, size_t line = __LINE__) nothrow
 	{
 		return Tcl_DbNewListObj(objc, objv, cast(char*)file.toStringz, cast(int)line);
 	}
