@@ -2033,7 +2033,7 @@ version(TCL_MEM_DEBUG)
 
 	char* attemptckrealloc(char* ptr, uint size, string file = __FILE__, size_t line = __LINE__) nothrow
 	{
-		return Tcl_AttemptDbCkrealloc(ptr, cast(char*)size, file.toStringz, cast(int)line);
+		return Tcl_AttemptDbCkrealloc(ptr, size, cast(char*)file.toStringz, cast(int)line);
 	}
 }
 else
