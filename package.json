@@ -1,0 +1,14 @@
+{
+	"name": "tcltk",
+	"description": "D bindings to Tcl/Tk",
+	"homepage": "https://github.com/nomad-software/tcltk",
+	"authors": ["Gary Willoughby"],
+	"copyright": "Copyright (c) 2013 Gary Willoughby",
+	"license": "MIT",
+	"configurations": [
+		{
+			"name": "library",
+			"excludedSourceFiles": []
+		}
+	],
+}

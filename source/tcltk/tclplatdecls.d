@@ -1,3 +1,9 @@
+/**
+ * D bindings to Tcl/Tk
+ *
+ * License:
+ *     MIT. See LICENSE for full details.
+ */
 module tcltk.tclplatdecls;
 
 version (Windows)

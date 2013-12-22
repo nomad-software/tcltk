@@ -1,4 +1,4 @@
 tcltk
 =====
 
-D bindings to tcl/tk
+D bindings to Tcl/Tk
