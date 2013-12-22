@@ -19,8 +19,8 @@ version (OSX)
 version (Windows)
 {
 	// wchar_t is used here in lieu of TCHAR.
-	extern(C) wchar_t* Tcl_WinUtfToTChar(const(char)* str, int len, Tcl_DString* dsPtr) nothrow;
-	extern(C) char* Tcl_WinTCharToUtf(const(wchar_t)* str, int len, Tcl_DString* dsPtr) nothrow;
+	extern(C) const(wchar_t)* Tcl_WinUtfToTChar(const(char)* str, int len, Tcl_DString* dsPtr) nothrow;
+	extern(C) const(char)* Tcl_WinTCharToUtf(const(wchar_t)* str, int len, Tcl_DString* dsPtr) nothrow;
 }
 
 version (OSX)
@@ -39,8 +39,8 @@ struct TclPlatStubs
 	version (Windows)
 	{
 		// wchar_t is used here in lieu of TCHAR.
-		extern(C) wchar_t* function(const(char)* str, int len, Tcl_DString* dsPtr) nothrow tcl_WinUtfToTChar;
-		extern(C) char* function(const(wchar_t)* str, int len, Tcl_DString* dsPtr) nothrow tcl_WinTCharToUtf;
+		extern(C) const(wchar_t)* function(const(char)* str, int len, Tcl_DString* dsPtr) nothrow tcl_WinUtfToTChar;
+		extern(C) const(char)* function(const(wchar_t)* str, int len, Tcl_DString* dsPtr) nothrow tcl_WinTCharToUtf;
 	}
 
 	version (OSX)

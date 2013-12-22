@@ -402,7 +402,7 @@ alias extern(C) void function(ClientData callbackData, Tcl_Channel chan, const(c
 alias extern(C) void function(ClientData clientData) nothrow Tcl_TimerProc;
 alias extern(C) int function(Tcl_Interp* interp, Tcl_Obj* objPtr) nothrow Tcl_SetFromAnyProc;
 alias extern(C) void function(Tcl_Obj* objPtr) nothrow Tcl_UpdateStringProc;
-alias extern(C) char* function(ClientData clientData, Tcl_Interp* interp, const(char)* part1, const(char)* part2, int flags) nothrow Tcl_VarTraceProc;
+alias extern(C) const(char)* function(ClientData clientData, Tcl_Interp* interp, const(char)* part1, const(char)* part2, int flags) nothrow Tcl_VarTraceProc;
 alias extern(C) void function(ClientData clientData, Tcl_Interp* interp, const(char)* oldName, const(char)* newName, int flags) nothrow Tcl_CommandTraceProc;
 alias extern(C) void function(int fd, int mask, Tcl_FileProc proc, ClientData clientData) nothrow Tcl_CreateFileHandlerProc;
 alias extern(C) void function(int fd) nothrow Tcl_DeleteFileHandlerProc;
@@ -462,7 +462,7 @@ struct Tcl_Obj
 	 * should use Tcl_GetStringFromObj or
 	 * Tcl_GetString to get a pointer to the byte
 	 * array as a readonly value. */
-    char* bytes;
+    const(char)* bytes;
 
 	/* The number of bytes at *bytes, not
 	 * including the terminating null. */
@@ -505,10 +505,10 @@ struct Tcl_Obj
  */
 struct Tcl_SavedResult
 {
-	char* result;
+	const(char)* result;
 	Tcl_FreeProc freeProc;
 	Tcl_Obj* objResultPtr;
-	char* appendResult;
+	const(char)* appendResult;
 	int appendAvl;
 	int appendUsed;
 	char[TCL_RESULT_SIZE + 1] resultSpace;
@@ -525,11 +525,11 @@ struct Tcl_Namespace
 	 * namespace. This contains no ::'s. The name
 	 * of the global namespace is "" although "::"
 	 * is an synonym. */
-    char* name;
+    const(char)* name;
 
 	/* The namespace's fully qualified name. This
 	 * starts with ::. */
-    char* fullName;
+    const(char)* fullName;
 
 	/* Arbitrary value associated with this
 	 * namespace. */
@@ -643,7 +643,7 @@ enum TCL_DSTRING_STATIC_SIZE = 200;
 struct Tcl_DString
 {
 	/* Points to beginning of string: either staticSpace below or a malloced array. */
-	char* string_;
+	const(char)* string_;
 
 	/* Number of non-NULL characters in the string. */
 	int length;
@@ -660,7 +660,7 @@ extern(C) int Tcl_DStringLength(Tcl_DString* dsPtr) nothrow
 	return (*dsPtr).length;
 }
 
-extern(C) char* Tcl_DStringValue(Tcl_DString* dsPtr) nothrow
+extern(C) const(char)* Tcl_DStringValue(Tcl_DString* dsPtr) nothrow
 {
 	return (*dsPtr).string_;
 }
@@ -832,7 +832,7 @@ struct Tcl_HashEntry
 		/* Key has one of these forms: */
 
 		/* One-word value for key. */
-		char* oneWordValue;
+		const(char)* oneWordValue;
 
 		/* Tcl_Obj * key value. */
 		Tcl_Obj* objPtr;
@@ -1169,7 +1169,7 @@ struct Tcl_ChannelType
 	/* The name of the channel type in Tcl
 	 * commands. This storage is owned by channel
 	 * type. */
-	char* typeName;
+	const(char)* typeName;
 
 	/* Version of the channel type. */
 	Tcl_ChannelTypeVersion version_;
@@ -1335,7 +1335,7 @@ struct utimbuf;
 alias extern(C) int function(Tcl_Obj* pathPtr, utimbuf* tval) nothrow Tcl_FSUtimeProc;
 alias extern(C) int function(Tcl_Interp* interp, Tcl_Obj* pathPtr, int nextCheckpoint) nothrow Tcl_FSNormalizePathProc;
 alias extern(C) int function(Tcl_Interp* interp, int index, Tcl_Obj* pathPtr, Tcl_Obj** objPtrRef) nothrow Tcl_FSFileAttrsGetProc;
-alias extern(C) char** function(Tcl_Obj* pathPtr, Tcl_Obj** objPtrRef) nothrow Tcl_FSFileAttrStringsProc;
+alias extern(C) const(char)[]* function(Tcl_Obj* pathPtr, Tcl_Obj** objPtrRef) nothrow Tcl_FSFileAttrStringsProc;
 alias extern(C) int function(Tcl_Interp* interp, int index, Tcl_Obj* pathPtr, Tcl_Obj* objPtr) nothrow Tcl_FSFileAttrsSetProc;
 alias extern(C) Tcl_Obj* function(Tcl_Obj* pathPtr, Tcl_Obj* toPtr, int linkType) nothrow Tcl_FSLinkProc;
 alias extern(C) int function(Tcl_Interp* interp, Tcl_Obj* pathPtr, Tcl_LoadHandle* handlePtr, Tcl_FSUnloadFileProc unloadProcPtr) nothrow Tcl_FSLoadFileProc;
@@ -1598,7 +1598,7 @@ struct Tcl_EncodingType
 	/* The name of the encoding, e.g. "euc-jp".
 	 * This name is the unique key for this
 	 * encoding type. */
-	char* encodingName;
+	const(char)* encodingName;
 
 	/* Function to convert from external encoding
 	 * into UTF-8. */
@@ -1673,7 +1673,7 @@ struct Tcl_Token
 	int type;
 
 	/* First character in token. */
-	char* start;
+	const(char)* start;
 
 	/* Number of bytes in token. */
 	int size;
@@ -1791,7 +1791,7 @@ struct Tcl_Parse
 {
 	/* Pointer to # that begins the first of one
 	 * or more comments preceding the command. */
-	char* commentStart;
+	const(char)* commentStart;
 
 	/* Number of bytes in comments (up through
 	 * newline character that terminates the last
@@ -1801,7 +1801,7 @@ struct Tcl_Parse
 
 	/* First character in first word of
 	 * command. */
-	char* commandStart;
+	const(char)* commandStart;
 
 	/* Number of bytes in command, including first
 	 * character of first word, up through the
@@ -1838,11 +1838,11 @@ struct Tcl_Parse
 
 	/* The original command string passed to
 	 * Tcl_ParseCommand. */
-	char* string;
+	const(char)* string;
 
 	/* Points to the character just after the last
 	 * one in the command string. */
-	char* end;
+	const(char)* end;
 
 	/* Interpreter to use for error reporting, or
 	 * NULL. */
@@ -1854,7 +1854,7 @@ struct Tcl_Parse
 	 * beginning of region where the error
 	 * occurred (e.g. the open brace if the close
 	 * brace is missing). */
-	char* term;
+	const(char)* term;
 
 	/* This field is set to 1 by Tcl_ParseCommand
 	 * if the command appears to be incomplete.
@@ -1941,8 +1941,8 @@ else
  */
 struct Tcl_Config
 {
-    char* key;   /* Configuration key to register. ASCII encoded, thus UTF-8. */
-    char* value; /* The value associated with the key. System encoding. */
+    const(char)* key;   /* Configuration key to register. ASCII encoded, thus UTF-8. */
+    const(char)* value; /* The value associated with the key. System encoding. */
 }
 
 /*
@@ -1977,8 +1977,8 @@ enum TCL_STUB_MAGIC = 0xFCA3BACF;
  * the main Tcl library, although there is a trivial implementation in the
  * main library in case an extension is statically linked into an application.
  */
-extern(C) char* Tcl_InitStubs(Tcl_Interp* interp, const(char)* version_, int exact) nothrow;
-extern(C) char* TclTomMathInitializeStubs(Tcl_Interp* interp, const(char)* version_, int epoch, int revision) nothrow;
+extern(C) const(char)* Tcl_InitStubs(Tcl_Interp* interp, const(char)* version_, int exact) nothrow;
+extern(C) const(char)* TclTomMathInitializeStubs(Tcl_Interp* interp, const(char)* version_, int epoch, int revision) nothrow;
 
 /*
  * TODO - tommath stubs export goes here!
@@ -1988,8 +1988,8 @@ extern(C) char* TclTomMathInitializeStubs(Tcl_Interp* interp, const(char)* versi
  * Public functions that are not accessible via the stubs table.
  * Tcl_GetMemoryInfo is needed for AOLserver. [Bug 1868171]
  */
-extern(C) void Tcl_Main(int argc, char** argv, Tcl_AppInitProc appInitProc) nothrow;
-extern(C) char* Tcl_PkgInitStubsCheck(Tcl_Interp* interp, const(char)* version_, int exact) nothrow;
+extern(C) void Tcl_Main(int argc, const(char)[]* argv, Tcl_AppInitProc appInitProc) nothrow;
+extern(C) const(char)* Tcl_PkgInitStubsCheck(Tcl_Interp* interp, const(char)* version_, int exact) nothrow;
 extern(C) void Tcl_GetMemoryInfo(Tcl_DString* dsPtr) nothrow;
 
 /*
@@ -2011,27 +2011,27 @@ public import tcltk.tclplatdecls;
  */
 version(TCL_MEM_DEBUG)
 {
-	char* ckalloc(uint size, string file = __FILE__, size_t line = __LINE__) nothrow
+	const(char)* ckalloc(uint size, string file = __FILE__, size_t line = __LINE__) nothrow
 	{
 		return Tcl_DbCkalloc(size, cast(char*)file.toStringz, cast(int)line);
 	}
 
-	void ckfree(char* ptr, string file = __FILE__, size_t line = __LINE__) nothrow
+	void ckfree(const(char)* ptr, string file = __FILE__, size_t line = __LINE__) nothrow
 	{
 		Tcl_DbCkfree(ptr, cast(char*)file.toStringz, cast(int)line);
 	}
 
-	char* ckrealloc(char* ptr, uint size, string file = __FILE__, size_t line = __LINE__) nothrow
+	const(char)* ckrealloc(const(char)* ptr, uint size, string file = __FILE__, size_t line = __LINE__) nothrow
 	{
 		return Tcl_DbCkrealloc(ptr, size, cast(char*)file.toStringz, cast(int)line);
 	}
 
-	char* attemptckalloc(uint size, string file = __FILE__, size_t line = __LINE__) nothrow
+	const(char)* attemptckalloc(uint size, string file = __FILE__, size_t line = __LINE__) nothrow
 	{
 		return Tcl_AttemptDbCkalloc(size, cast(char*)file.toStringz, cast(int)line);
 	}
 
-	char* attemptckrealloc(char* ptr, uint size, string file = __FILE__, size_t line = __LINE__) nothrow
+	const(char)* attemptckrealloc(const(char)* ptr, uint size, string file = __FILE__, size_t line = __LINE__) nothrow
 	{
 		return Tcl_AttemptDbCkrealloc(ptr, size, cast(char*)file.toStringz, cast(int)line);
 	}
@@ -2044,27 +2044,27 @@ else
 	 * memory allocator both inside and outside of the Tcl library.
 	 */
 
-	char* ckalloc(uint size) nothrow
+	const(char)* ckalloc(uint size) nothrow
 	{
 		return Tcl_Alloc(size);
 	}
 
-	void ckfree(char* ptr) nothrow
+	void ckfree(const(char)* ptr) nothrow
 	{
 		Tcl_Free(ptr);
 	}
 
-	char* ckrealloc(char* ptr, uint size) nothrow
+	const(char)* ckrealloc(const(char)* ptr, uint size) nothrow
 	{
 		return Tcl_Realloc(ptr, size);
 	}
 
-	char* attemptckalloc(uint size) nothrow
+	const(char)* attemptckalloc(uint size) nothrow
 	{
 		return Tcl_AttemptAlloc(size);
 	}
 
-	char* attemptckrealloc(char* ptr, uint size) nothrow
+	const(char)* attemptckrealloc(const(char)* ptr, uint size) nothrow
 	{
 		return Tcl_AttemptRealloc(ptr, size);
 	}
@@ -2189,7 +2189,7 @@ void Tcl_SetHashValue(Tcl_HashEntry* h, ClientData c) nothrow
 	(*h).clientData = c;
 }
 
-char* Tcl_GetHashKey(Tcl_HashTable* tablePtr, Tcl_HashEntry* h) nothrow
+const(char)* Tcl_GetHashKey(Tcl_HashTable* tablePtr, Tcl_HashEntry* h) nothrow
 {
 	if ((*tablePtr).keyType == TCL_ONE_WORD_KEYS || (*tablePtr).keyType == TCL_CUSTOM_PTR_KEYS)
 	{
