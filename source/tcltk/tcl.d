@@ -176,7 +176,7 @@ struct Tcl_Interp
 	 * Other values give the address of function to invoke to free the result.
 	 * Tcl_Eval must free it before executing next command.
 	 */
-	extern (C) void function(char *blockPtr) nothrow freeProc;
+	extern(C) void function(char *blockPtr) nothrow freeProc;
 	/*
 	 * When TCL_ERROR is returned, this gives the line number within the
 	 * command where the error occurred (1 if first line).
@@ -228,11 +228,11 @@ alias Tcl_Var = Tcl_Var_*;
  */
 version (Windows)
 {
-	alias extern (Windows) uint function(ClientData clientData) nothrow Tcl_ThreadCreateProc;
+	alias extern(Windows) uint function(ClientData clientData) nothrow Tcl_ThreadCreateProc;
 }
 else
 {
-	alias extern (C) void function(ClientData clientData) nothrow Tcl_ThreadCreateProc;
+	alias extern(C) void function(ClientData clientData) nothrow Tcl_ThreadCreateProc;
 }
 
 /*
@@ -2203,4 +2203,4 @@ const(char)* Tcl_GetHashKey(Tcl_HashTable* tablePtr, Tcl_HashEntry* h) nothrow
  * function is not *implemented* by the tcl library, so the storage class is
  * neither DLLEXPORT nor DLLIMPORT.
  */
-extern (C) int Tcl_AppInit(Tcl_Interp* interp) nothrow;
+extern(C) int Tcl_AppInit(Tcl_Interp* interp) nothrow;
