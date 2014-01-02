@@ -169,14 +169,14 @@ struct Tcl_Interp
 	/*
 	 * If the last command returned a string result, this points to it.
 	 */
-    char *result;
+    const(char)* result;
 	/*
 	 * Zero means the string result is statically allocated. TCL_DYNAMIC
 	 * means it was allocated with ckalloc and should be freed with ckfree.
 	 * Other values give the address of function to invoke to free the result.
 	 * Tcl_Eval must free it before executing next command.
 	 */
-	extern(C) void function(char *blockPtr) nothrow freeProc;
+	extern(C) void function(char* blockPtr) nothrow freeProc;
 	/*
 	 * When TCL_ERROR is returned, this gives the line number within the
 	 * command where the error occurred (1 if first line).

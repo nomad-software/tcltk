@@ -887,172 +887,172 @@ enum TK_WM_MANAGEABLE       = 0x80000;
  *
  *--------------------------------------------------------------
  */
-Display* Tk_Display(Tk_Window* tkwin)
+Display* Tk_Display(Tk_Window tkwin)
 {
 	return (*(cast(Tk_FakeWin*)tkwin)).display;
 }
 
-int Tk_ScreenNumber(Tk_Window* tkwin)
+int Tk_ScreenNumber(Tk_Window tkwin)
 {
 	return (*(cast(Tk_FakeWin*)tkwin)).screenNum;
 }
 
-Screen* Tk_Screen(Tk_Window* tkwin)
+Screen* Tk_Screen(Tk_Window tkwin)
 {
 	return ScreenOfDisplay(Tk_Display(tkwin), Tk_ScreenNumber(tkwin));
 }
 
-int Tk_Depth(Tk_Window* tkwin)
+int Tk_Depth(Tk_Window tkwin)
 {
 	return (*(cast(Tk_FakeWin*)tkwin)).depth;
 }
 
-Visual* Tk_Visual(Tk_Window* tkwin)
+Visual* Tk_Visual(Tk_Window tkwin)
 {
 	return (*(cast(Tk_FakeWin*)tkwin)).visual;
 }
 
-Window Tk_WindowId(Tk_Window* tkwin)
+Window Tk_WindowId(Tk_Window tkwin)
 {
 	return (*(cast(Tk_FakeWin*)tkwin)).window;
 }
 
-const(char)* Tk_PathName(Tk_Window* tkwin)
+const(char)* Tk_PathName(Tk_Window tkwin)
 {
 	return (*(cast(Tk_FakeWin*)tkwin)).pathName;
 }
 
-Tk_Uid Tk_Name(Tk_Window* tkwin)
+Tk_Uid Tk_Name(Tk_Window tkwin)
 {
 	return (*(cast(Tk_FakeWin*)tkwin)).nameUid;
 }
 
-Tk_Uid Tk_Class(Tk_Window* tkwin)
+Tk_Uid Tk_Class(Tk_Window tkwin)
 {
 	return (*(cast(Tk_FakeWin*)tkwin)).classUid;
 }
 
-int Tk_X(Tk_Window* tkwin)
+int Tk_X(Tk_Window tkwin)
 {
 	return Tk_Changes(tkwin).x;
 }
 
-int Tk_Y(Tk_Window* tkwin)
+int Tk_Y(Tk_Window tkwin)
 {
 	return Tk_Changes(tkwin).y;
 }
 
-int Tk_Width(Tk_Window* tkwin)
+int Tk_Width(Tk_Window tkwin)
 {
 	return Tk_Changes(tkwin).width;
 }
 
-int Tk_Height(Tk_Window* tkwin)
+int Tk_Height(Tk_Window tkwin)
 {
 	return Tk_Changes(tkwin).height;
 }
 
-XWindowChanges Tk_Changes(Tk_Window* tkwin)
+XWindowChanges Tk_Changes(Tk_Window tkwin)
 {
 	return (*(cast(Tk_FakeWin*)tkwin)).changes;
 }
 
-XSetWindowAttributes Tk_Attributes(Tk_Window* tkwin)
+XSetWindowAttributes Tk_Attributes(Tk_Window tkwin)
 {
 	return (*(cast(Tk_FakeWin*)tkwin)).atts;
 }
 
-uint Tk_IsEmbedded(Tk_Window* tkwin)
+uint Tk_IsEmbedded(Tk_Window tkwin)
 {
 	return (*(cast(Tk_FakeWin*)tkwin)).flags & TK_EMBEDDED;
 }
 
-uint Tk_IsContainer(Tk_Window* tkwin)
+uint Tk_IsContainer(Tk_Window tkwin)
 {
 	return (*(cast(Tk_FakeWin*)tkwin)).flags & TK_CONTAINER;
 }
 
-uint Tk_IsMapped(Tk_Window* tkwin)
+uint Tk_IsMapped(Tk_Window tkwin)
 {
 	return (*(cast(Tk_FakeWin*)tkwin)).flags & TK_MAPPED;
 }
 
-uint Tk_IsTopLevel(Tk_Window* tkwin)
+uint Tk_IsTopLevel(Tk_Window tkwin)
 {
 	return (*(cast(Tk_FakeWin*)tkwin)).flags & TK_TOP_LEVEL;
 }
 
-uint Tk_HasWrapper(Tk_Window* tkwin)
+uint Tk_HasWrapper(Tk_Window tkwin)
 {
 	return (*(cast(Tk_FakeWin*)tkwin)).flags & TK_HAS_WRAPPER;
 }
 
-uint Tk_WinManaged(Tk_Window* tkwin)
+uint Tk_WinManaged(Tk_Window tkwin)
 {
 	return (*(cast(Tk_FakeWin*)tkwin)).flags & TK_WIN_MANAGED;
 }
 
-uint Tk_TopWinHierarchy(Tk_Window* tkwin)
+uint Tk_TopWinHierarchy(Tk_Window tkwin)
 {
 	return (*(cast(Tk_FakeWin*)tkwin)).flags & TK_TOP_HIERARCHY;
 }
 
-uint Tk_IsManageable(Tk_Window* tkwin)
+uint Tk_IsManageable(Tk_Window tkwin)
 {
 	return (*(cast(Tk_FakeWin*)tkwin)).flags & TK_WM_MANAGEABLE;
 }
 
-int Tk_ReqWidth(Tk_Window* tkwin)
+int Tk_ReqWidth(Tk_Window tkwin)
 {
 	return (*(cast(Tk_FakeWin*)tkwin)).reqWidth;
 }
 
-int Tk_ReqHeight(Tk_Window* tkwin)
+int Tk_ReqHeight(Tk_Window tkwin)
 {
 	return (*(cast(Tk_FakeWin*)tkwin)).reqHeight;
 }
 
-deprecated int Tk_InternalBorderWidth(Tk_Window* tkwin)
+deprecated int Tk_InternalBorderWidth(Tk_Window tkwin)
 {
 	return (*(cast(Tk_FakeWin*)tkwin)).internalBorderLeft;
 }
 
-int Tk_InternalBorderLeft(Tk_Window* tkwin)
+int Tk_InternalBorderLeft(Tk_Window tkwin)
 {
 	return (*(cast(Tk_FakeWin*)tkwin)).internalBorderLeft;
 }
 
-int Tk_InternalBorderRight(Tk_Window* tkwin)
+int Tk_InternalBorderRight(Tk_Window tkwin)
 {
 	return (*(cast(Tk_FakeWin*)tkwin)).internalBorderRight;
 }
 
-int Tk_InternalBorderTop(Tk_Window* tkwin)
+int Tk_InternalBorderTop(Tk_Window tkwin)
 {
 	return (*(cast(Tk_FakeWin*)tkwin)).internalBorderTop;
 }
 
-int Tk_InternalBorderBottom(Tk_Window* tkwin)
+int Tk_InternalBorderBottom(Tk_Window tkwin)
 {
 	return (*(cast(Tk_FakeWin*)tkwin)).internalBorderBottom;
 }
 
-int Tk_MinReqWidth(Tk_Window* tkwin)
+int Tk_MinReqWidth(Tk_Window tkwin)
 {
 	return (*(cast(Tk_FakeWin*)tkwin)).minReqWidth;
 }
 
-int Tk_MinReqHeight(Tk_Window* tkwin)
+int Tk_MinReqHeight(Tk_Window tkwin)
 {
 	return (*(cast(Tk_FakeWin*)tkwin)).minReqHeight;
 }
 
-Tk_Window Tk_Parent(Tk_Window* tkwin)
+Tk_Window Tk_Parent(Tk_Window tkwin)
 {
 	return (*(cast(Tk_FakeWin*)tkwin)).parentPtr;
 }
 
-Colormap Tk_Colormap(Tk_Window* tkwin)
+Colormap Tk_Colormap(Tk_Window tkwin)
 {
 	return Tk_Attributes(tkwin).colormap;
 }
