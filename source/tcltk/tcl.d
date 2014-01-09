@@ -169,7 +169,7 @@ struct Tcl_Interp
 	/*
 	 * If the last command returned a string result, this points to it.
 	 */
-    const(char)* result;
+	const(char)* result;
 	/*
 	 * Zero means the string result is statically allocated. TCL_DYNAMIC
 	 * means it was allocated with ckalloc and should be freed with ckfree.
@@ -181,7 +181,7 @@ struct Tcl_Interp
 	 * When TCL_ERROR is returned, this gives the line number within the
 	 * command where the error occurred (1 if first line).
 	 */
-    int errorLine;
+	int errorLine;
 }
 
 struct Tcl_AsyncHandler_;

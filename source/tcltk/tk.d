@@ -7,6 +7,9 @@
 module tcltk.tk;
 
 import core.stdc.config;
+import deimos.X11.X;
+import deimos.X11.Xlib;
+
 public import tcltk.tcl;
 
 static if (TCL_MAJOR_VERSION != 8 || TCL_MINOR_VERSION != 5)
@@ -38,9 +41,6 @@ enum TK_RELEASE_LEVEL  = TCL_FINAL_RELEASE;
 enum TK_RELEASE_SERIAL = 11;
 enum TK_VERSION        = "8.5";
 enum TK_PATCH_LEVEL    = "8.5.11";
-
-public import deimos.X11.X;
-public import deimos.X11.Xlib;
 
 /*
  * Dummy types that are used by clients:
