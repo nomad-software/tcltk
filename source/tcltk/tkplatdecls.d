@@ -8,7 +8,7 @@ module tcltk.tkplatdecls;
 
 import core.stdc.config;
 import core.sys.windows.windows;
-import deimos.X11.X;
+import x11.X;
 import tcltk.tk;
 
 /*

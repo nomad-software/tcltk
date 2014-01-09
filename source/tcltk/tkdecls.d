@@ -7,8 +7,8 @@
 module tcltk.tkdecls;
 
 import core.stdc.config;
-import deimos.X11.X;
-import deimos.X11.Xlib;
+import x11.X;
+import x11.Xlib;
 import tcltk.tk;
 
 /*
