@@ -310,7 +310,11 @@ struct Tcl_RegExpInfo
  * reference in tclDecls.h.
  */
 alias Tcl_Stat_    = Tcl_StatBuf;
-alias Tcl_OldStat_ = stat_t;
+
+version(Posix)
+{
+	alias Tcl_OldStat_ = stat_t;
+}
 
 /*
  * When a TCL command returns, the interpreter contains a result from the
