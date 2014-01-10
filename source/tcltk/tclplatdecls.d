@@ -6,6 +6,8 @@
  */
 module tcltk.tclplatdecls;
 
+import tcltk.tcl;
+
 version (Windows)
 {
 	import core.stdc.stddef : wchar_t;

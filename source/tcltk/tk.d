@@ -1710,9 +1710,14 @@ alias Tk_TimerProc          = Tcl_TimerProc;
 alias Tk_TimerToken         = Tcl_TimerToken;
 alias Tk_BackgroundError    = Tcl_BackgroundError;
 alias Tk_CancelIdleCall     = Tcl_CancelIdleCall;
-alias Tk_CreateFileHandler  = Tcl_CreateFileHandler;
 alias Tk_CreateTimerHandler = Tcl_CreateTimerHandler;
-alias Tk_DeleteFileHandler  = Tcl_DeleteFileHandler;
+
+version(Posix)
+{
+	alias Tk_CreateFileHandler  = Tcl_CreateFileHandler;
+	alias Tk_DeleteFileHandler  = Tcl_DeleteFileHandler;
+}
+
 alias Tk_DeleteTimerHandler = Tcl_DeleteTimerHandler;
 alias Tk_DoOneEvent         = Tcl_DoOneEvent;
 alias Tk_DoWhenIdle         = Tcl_DoWhenIdle;
