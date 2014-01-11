@@ -8,6 +8,9 @@
 	"libs-posix": ["tcl", "tk"],
 	"sourceFiles-windows-x86": ["lib/windows/x86/tcl86.lib", "lib/windows/x86/tk86.lib"],
 	"sourceFiles-windows-x86_64": ["lib/windows/x86_64/tcl86.lib", "lib/windows/x86_64/tk86.lib"],
+	"excludedSourceFiles": [
+		"source/c/*",
+	],
 	"dependencies": {
 		"x11": "~master"
 	},
