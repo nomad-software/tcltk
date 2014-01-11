@@ -7,8 +7,15 @@
 	"license": "MIT",
 	"dependencies": {
 		"x11": "~master"
-	};
+	},
 	"subConfigurations": {
 		"x11": "tcltk-import"
 	},
+	"configurations": [
+		{
+			"name": "library",
+			"targetType": "library",
+			"libs-posix": ["tcl", "tk"],
+		},
+	],
 }
