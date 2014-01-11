@@ -3,9 +3,12 @@
 	"description": "Bindings to Tcl/Tk for the D programming language",
 	"homepage": "https://github.com/nomad-software/tcltk",
 	"authors": ["Gary Willoughby"],
-	"copyright": "Copyright (c) 2013 Gary Willoughby",
+	"copyright": "Copyright (c) 2014 Gary Willoughby",
 	"license": "MIT",
 	"libs-posix": ["tcl", "tk"],
+	"excludedSourceFiles": [
+		"source/c/*",
+	],
 	"dependencies": {
 		"x11": "~master"
 	},
