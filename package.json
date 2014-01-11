@@ -6,9 +6,8 @@
 	"copyright": "Copyright (c) 2014 Gary Willoughby",
 	"license": "MIT",
 	"libs-posix": ["tcl", "tk"],
-	"excludedSourceFiles": [
-		"source/c/*",
-	],
+	"sourceFiles-windows-x86": ["lib/windows/x86/tcl86.lib", "lib/windows/x86/tk86.lib"],
+	"sourceFiles-windows-x86_64": ["lib/windows/x86_64/tcl86.lib", "lib/windows/x86_64/tk86.lib"],
 	"dependencies": {
 		"x11": "~master"
 	},
