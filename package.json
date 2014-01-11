@@ -5,17 +5,11 @@
 	"authors": ["Gary Willoughby"],
 	"copyright": "Copyright (c) 2013 Gary Willoughby",
 	"license": "MIT",
+	"libs-posix": ["tcl", "tk"],
 	"dependencies": {
 		"x11": "~master"
 	},
 	"subConfigurations": {
 		"x11": "tcltk-import"
 	},
-	"configurations": [
-		{
-			"name": "library",
-			"targetType": "library",
-			"libs-posix": ["tcl", "tk"],
-		},
-	],
 }
