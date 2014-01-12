@@ -13,4 +13,9 @@ Should build just fine.
 Should build just fine.
 
 ### Windows
-Depends on [ActiveState ActiveTcl](http://www.activestate.com/activetcl) being installed.
+[ActiveState ActiveTcl](http://www.activestate.com/activetcl) must be installed.
+
+#### 32bit DMD compiler on 64bit Windows
+If compiling using the 32bit DMD compiler on Windows 64bit then you must pass the following option when building using dub:
+
+    --arch=x86
