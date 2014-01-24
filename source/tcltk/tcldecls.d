@@ -16,12 +16,12 @@ import tcltk.tcl;
 extern(C) int Tcl_PkgProvideEx(Tcl_Interp* interp, const(char)* name, const(char)* version_, ClientData clientData) nothrow;
 extern(C) const(char)* Tcl_PkgRequireEx(Tcl_Interp* interp, const(char)* name, const(char)* version_, int exact, ClientData* clientDataPtr) nothrow;
 extern(C) void Tcl_Panic(const(char)* format, ...) nothrow;
-extern(C) const(char)* Tcl_Alloc(uint size) nothrow;
+extern(C) void* Tcl_Alloc(uint size) nothrow;
 extern(C) void Tcl_Free(const(char)* ptr) nothrow;
-extern(C) const(char)* Tcl_Realloc(const(char)* ptr, uint size) nothrow;
-extern(C) const(char)* Tcl_DbCkalloc(uint size, const(char)* file, int line) nothrow;
-extern(C) int Tcl_DbCkfree(const(char)* ptr, const(char)* file, int line) nothrow;
-extern(C) const(char)* Tcl_DbCkrealloc(const(char)* ptr, uint size, const(char)* file, int line) nothrow;
+extern(C) void* Tcl_Realloc(const(char)* ptr, uint size) nothrow;
+extern(C) void* Tcl_DbCkalloc(uint size, const(char)* file, int line) nothrow;
+extern(C) void Tcl_DbCkfree(const(char)* ptr, const(char)* file, int line) nothrow;
+extern(C) void* Tcl_DbCkrealloc(const(char)* ptr, uint size, const(char)* file, int line) nothrow;
 
 version(Posix)
 {
@@ -33,9 +33,9 @@ version(Posix)
 	extern(C) void Tcl_DeleteFileHandler(int fd) nothrow;
 }
 
-extern(C) void Tcl_SetTimer(Tcl_Time* timePtr) nothrow;
+extern(C) void Tcl_SetTimer(const(Tcl_Time)* timePtr) nothrow;
 extern(C) void Tcl_Sleep(int ms) nothrow;
-extern(C) int Tcl_WaitForEvent(Tcl_Time* timePtr) nothrow;
+extern(C) int Tcl_WaitForEvent(const(Tcl_Time)* timePtr) nothrow;
 extern(C) int Tcl_AppendAllObjTypes(Tcl_Interp* interp, Tcl_Obj* objPtr) nothrow;
 extern(C) void Tcl_AppendStringsToObj(Tcl_Obj* objPtr, ...) nothrow;
 extern(C) void Tcl_AppendToObj(Tcl_Obj* objPtr, const(char)* bytes, int length) nothrow;
@@ -62,7 +62,7 @@ extern(C) int Tcl_GetIndexFromObj(Tcl_Interp* interp, Tcl_Obj* objPtr, const(cha
 extern(C) int Tcl_GetInt(Tcl_Interp* interp, const(char)* src, int* intPtr) nothrow;
 extern(C) int Tcl_GetIntFromObj(Tcl_Interp* interp, Tcl_Obj* objPtr, int* intPtr) nothrow;
 extern(C) int Tcl_GetLongFromObj(Tcl_Interp* interp, Tcl_Obj* objPtr, c_long* longPtr) nothrow;
-extern(C) Tcl_ObjType* Tcl_GetObjType(const(char)* typeName) nothrow;
+extern(C) const(Tcl_ObjType)* Tcl_GetObjType(const(char)* typeName) nothrow;
 extern(C) const(char)* Tcl_GetStringFromObj(Tcl_Obj* objPtr, int* lengthPtr) nothrow;
 extern(C) void Tcl_InvalidateStringRep(Tcl_Obj* objPtr) nothrow;
 extern(C) int Tcl_ListObjAppendList(Tcl_Interp* interp, Tcl_Obj* listPtr, Tcl_Obj* elemListPtr) nothrow;
@@ -110,7 +110,7 @@ extern(C) int Tcl_ConvertElement(const(char)* src, const(char)* dst, int flags) 
 extern(C) int Tcl_ConvertCountedElement(const(char)* src, int length, const(char)* dst, int flags) nothrow;
 extern(C) int Tcl_CreateAlias(Tcl_Interp* slave, const(char)* slaveCmd, Tcl_Interp* target, const(char)* targetCmd, int argc, const(char)** argv) nothrow;
 extern(C) int Tcl_CreateAliasObj(Tcl_Interp* slave, const(char)* slaveCmd, Tcl_Interp* target, const(char)* targetCmd, int objc, const(Tcl_Obj*)* objv) nothrow;
-extern(C) Tcl_Channel Tcl_CreateChannel(Tcl_ChannelType* typePtr, const(char)* chanName, ClientData instanceData, int mask) nothrow;
+extern(C) Tcl_Channel Tcl_CreateChannel(const(Tcl_ChannelType)* typePtr, const(char)* chanName, ClientData instanceData, int mask) nothrow;
 extern(C) void Tcl_CreateChannelHandler(Tcl_Channel chan, int mask, Tcl_ChannelProc proc, ClientData clientData) nothrow;
 extern(C) void Tcl_CreateCloseHandler(Tcl_Channel chan, Tcl_CloseProc proc, ClientData clientData) nothrow;
 extern(C) Tcl_Command Tcl_CreateCommand(Tcl_Interp* interp, const(char)* cmdName, Tcl_CmdProc proc, ClientData clientData, Tcl_CmdDeleteProc deleteProc) nothrow;
@@ -180,7 +180,7 @@ extern(C) ClientData Tcl_GetChannelInstanceData(Tcl_Channel chan) nothrow;
 extern(C) int Tcl_GetChannelMode(Tcl_Channel chan) nothrow;
 extern(C) const(char)* Tcl_GetChannelName(Tcl_Channel chan) nothrow;
 extern(C) int Tcl_GetChannelOption(Tcl_Interp* interp, Tcl_Channel chan, const(char)* optionName, Tcl_DString* dsPtr) nothrow;
-extern(C) Tcl_ChannelType* Tcl_GetChannelType(Tcl_Channel chan) nothrow;
+extern(C) const(Tcl_ChannelType)* Tcl_GetChannelType(Tcl_Channel chan) nothrow;
 extern(C) int Tcl_GetCommandInfo(Tcl_Interp* interp, const(char)* cmdName, Tcl_CmdInfo* infoPtr) nothrow;
 extern(C) const(char)* Tcl_GetCommandName(Tcl_Interp* interp, Tcl_Command command) nothrow;
 extern(C) int Tcl_GetErrno() nothrow;
@@ -237,7 +237,7 @@ extern(C) void Tcl_ReapDetachedProcs() nothrow;
 extern(C) int Tcl_RecordAndEval(Tcl_Interp* interp, const(char)* cmd, int flags) nothrow;
 extern(C) int Tcl_RecordAndEvalObj(Tcl_Interp* interp, Tcl_Obj* cmdPtr, int flags) nothrow;
 extern(C) void Tcl_RegisterChannel(Tcl_Interp* interp, Tcl_Channel chan) nothrow;
-extern(C) void Tcl_RegisterObjType(Tcl_ObjType* typePtr) nothrow;
+extern(C) void Tcl_RegisterObjType(const(Tcl_ObjType)* typePtr) nothrow;
 extern(C) Tcl_RegExp Tcl_RegExpCompile(Tcl_Interp* interp, const(char)* pattern) nothrow;
 extern(C) int Tcl_RegExpExec(Tcl_Interp* interp, Tcl_RegExp regexp, const(char)* text, const(char)* start) nothrow;
 extern(C) int Tcl_RegExpMatch(Tcl_Interp* interp, const(char)* text, const(char)* pattern) nothrow;
@@ -255,7 +255,7 @@ extern(C) int Tcl_SetChannelOption(Tcl_Interp* interp, Tcl_Channel chan, const(c
 extern(C) int Tcl_SetCommandInfo(Tcl_Interp* interp, const(char)* cmdName, const(Tcl_CmdInfo)* infoPtr) nothrow;
 extern(C) void Tcl_SetErrno(int err) nothrow;
 extern(C) void Tcl_SetErrorCode(Tcl_Interp* interp, ...) nothrow;
-extern(C) void Tcl_SetMaxBlockTime(Tcl_Time* timePtr) nothrow;
+extern(C) void Tcl_SetMaxBlockTime(const(Tcl_Time)* timePtr) nothrow;
 extern(C) void Tcl_SetPanicProc(Tcl_PanicProc panicProc) nothrow;
 extern(C) int Tcl_SetRecursionLimit(Tcl_Interp* interp, int depth) nothrow;
 extern(C) void Tcl_SetResult(Tcl_Interp* interp, const(char)* result, Tcl_FreeProc freeProc) nothrow;
@@ -307,7 +307,7 @@ extern(C) Tcl_Pid Tcl_WaitPid(Tcl_Pid pid, int* statPtr, int options) nothrow;
 extern(C) void Tcl_PanicVA(const(char)* format, va_list argList) nothrow;
 extern(C) void Tcl_GetVersion(int* major, int* minor, int* patchLevel, int* type) nothrow;
 extern(C) void Tcl_InitMemory(Tcl_Interp* interp) nothrow;
-extern(C) Tcl_Channel Tcl_StackChannel(Tcl_Interp* interp, Tcl_ChannelType* typePtr, ClientData instanceData, int mask, Tcl_Channel prevChan) nothrow;
+extern(C) Tcl_Channel Tcl_StackChannel(Tcl_Interp* interp, const(Tcl_ChannelType)* typePtr, ClientData instanceData, int mask, Tcl_Channel prevChan) nothrow;
 extern(C) int Tcl_UnstackChannel(Tcl_Interp* interp, Tcl_Channel chan) nothrow;
 extern(C) Tcl_Channel Tcl_GetStackedChannel(Tcl_Channel chan) nothrow;
 extern(C) void Tcl_SetMainLoop(Tcl_MainLoopProc proc) nothrow;
@@ -336,7 +336,7 @@ extern(C) ClientData Tcl_InitNotifier() nothrow;
 extern(C) void Tcl_MutexLock(Tcl_Mutex* mutexPtr) nothrow;
 extern(C) void Tcl_MutexUnlock(Tcl_Mutex* mutexPtr) nothrow;
 extern(C) void Tcl_ConditionNotify(Tcl_Condition* condPtr) nothrow;
-extern(C) void Tcl_ConditionWait(Tcl_Condition* condPtr, Tcl_Mutex* mutexPtr, Tcl_Time* timePtr) nothrow;
+extern(C) void Tcl_ConditionWait(Tcl_Condition* condPtr, Tcl_Mutex* mutexPtr, const(Tcl_Time)* timePtr) nothrow;
 extern(C) int Tcl_NumUtfChars(const(char)* src, int length) nothrow;
 extern(C) int Tcl_ReadChars(Tcl_Channel channel, Tcl_Obj* objPtr, int charsToRead, int appendFlag) nothrow;
 extern(C) void Tcl_RestoreResult(Tcl_Interp* interp, Tcl_SavedResult* statePtr) nothrow;
@@ -446,17 +446,17 @@ extern(C) void Tcl_ClearChannelHandlers(Tcl_Channel channel) nothrow;
 extern(C) int Tcl_IsChannelExisting(const(char)* channelName) nothrow;
 extern(C) int Tcl_UniCharNcasecmp(const(Tcl_UniChar)* ucs, const(Tcl_UniChar)* uct, c_ulong numChars) nothrow;
 extern(C) int Tcl_UniCharCaseMatch(const(Tcl_UniChar)* uniStr, const(Tcl_UniChar)* uniPattern, int nocase) nothrow;
-extern(C) Tcl_HashEntry* Tcl_FindHashEntry(Tcl_HashTable* tablePtr, const(char)* key) nothrow;
-extern(C) Tcl_HashEntry* Tcl_CreateHashEntry(Tcl_HashTable* tablePtr, const(char)* key, int* newPtr) nothrow;
-extern(C) void Tcl_InitCustomHashTable(Tcl_HashTable* tablePtr, int keyType, Tcl_HashKeyType* typePtr) nothrow;
+extern(C) Tcl_HashEntry* Tcl_FindHashEntry(Tcl_HashTable* tablePtr, const(void)* key) nothrow;
+extern(C) Tcl_HashEntry* Tcl_CreateHashEntry(Tcl_HashTable* tablePtr, const(void)* key, int* newPtr) nothrow;
+extern(C) void Tcl_InitCustomHashTable(Tcl_HashTable* tablePtr, int keyType, const(Tcl_HashKeyType)* typePtr) nothrow;
 extern(C) void Tcl_InitObjHashTable(Tcl_HashTable* tablePtr) nothrow;
 extern(C) ClientData Tcl_CommandTraceInfo(Tcl_Interp* interp, const(char)* varName, int flags, Tcl_CommandTraceProc procPtr, ClientData prevClientData) nothrow;
 extern(C) int Tcl_TraceCommand(Tcl_Interp* interp, const(char)* varName, int flags, Tcl_CommandTraceProc proc, ClientData clientData) nothrow;
 extern(C) void Tcl_UntraceCommand(Tcl_Interp* interp, const(char)* varName, int flags, Tcl_CommandTraceProc proc, ClientData clientData) nothrow;
-extern(C) const(char)* Tcl_AttemptAlloc(uint size) nothrow;
-extern(C) const(char)* Tcl_AttemptDbCkalloc(uint size, const(char)* file, int line) nothrow;
-extern(C) const(char)* Tcl_AttemptRealloc(const(char)* ptr, uint size) nothrow;
-extern(C) const(char)* Tcl_AttemptDbCkrealloc(const(char)* ptr, uint size, const(char)* file, int line) nothrow;
+extern(C) void* Tcl_AttemptAlloc(uint size) nothrow;
+extern(C) void* Tcl_AttemptDbCkalloc(uint size, const(char)* file, int line) nothrow;
+extern(C) void* Tcl_AttemptRealloc(const(char)* ptr, uint size) nothrow;
+extern(C) void* Tcl_AttemptDbCkrealloc(const(char)* ptr, uint size, const(char)* file, int line) nothrow;
 extern(C) int Tcl_AttemptSetObjLength(Tcl_Obj* objPtr, int length) nothrow;
 extern(C) Tcl_ThreadId Tcl_GetChannelThread(Tcl_Channel channel) nothrow;
 extern(C) Tcl_UniChar* Tcl_GetUnicodeFromObj(Tcl_Obj* objPtr, int* lengthPtr) nothrow;
@@ -490,26 +490,26 @@ extern(C) Tcl_Obj* Tcl_FSSplitPath(Tcl_Obj* pathPtr, int* lenPtr) nothrow;
 extern(C) int Tcl_FSEqualPaths(Tcl_Obj* firstPtr, Tcl_Obj* secondPtr) nothrow;
 extern(C) Tcl_Obj* Tcl_FSGetNormalizedPath(Tcl_Interp* interp, Tcl_Obj* pathPtr) nothrow;
 extern(C) Tcl_Obj* Tcl_FSJoinToPath(Tcl_Obj* pathPtr, int objc, const(Tcl_Obj*)* objv) nothrow;
-extern(C) ClientData Tcl_FSGetInternalRep(Tcl_Obj* pathPtr, Tcl_Filesystem* fsPtr) nothrow;
+extern(C) ClientData Tcl_FSGetInternalRep(Tcl_Obj* pathPtr, const(Tcl_Filesystem)* fsPtr) nothrow;
 extern(C) Tcl_Obj* Tcl_FSGetTranslatedPath(Tcl_Interp* interp, Tcl_Obj* pathPtr) nothrow;
 extern(C) int Tcl_FSEvalFile(Tcl_Interp* interp, Tcl_Obj* fileName) nothrow;
-extern(C) Tcl_Obj* Tcl_FSNewNativePath(Tcl_Filesystem* fromFilesystem, ClientData clientData) nothrow;
-extern(C) const(char)* Tcl_FSGetNativePath(Tcl_Obj* pathPtr) nothrow;
+extern(C) Tcl_Obj* Tcl_FSNewNativePath(const(Tcl_Filesystem)* fromFilesystem, ClientData clientData) nothrow;
+extern(C) const(void)* Tcl_FSGetNativePath(Tcl_Obj* pathPtr) nothrow;
 extern(C) Tcl_Obj* Tcl_FSFileSystemInfo(Tcl_Obj* pathPtr) nothrow;
 extern(C) Tcl_Obj* Tcl_FSPathSeparator(Tcl_Obj* pathPtr) nothrow;
 extern(C) Tcl_Obj* Tcl_FSListVolumes() nothrow;
-extern(C) int Tcl_FSRegister(ClientData clientData, Tcl_Filesystem* fsPtr) nothrow;
-extern(C) int Tcl_FSUnregister(Tcl_Filesystem* fsPtr) nothrow;
-extern(C) ClientData Tcl_FSData(Tcl_Filesystem* fsPtr) nothrow;
+extern(C) int Tcl_FSRegister(ClientData clientData, const(Tcl_Filesystem)* fsPtr) nothrow;
+extern(C) int Tcl_FSUnregister(const(Tcl_Filesystem)* fsPtr) nothrow;
+extern(C) ClientData Tcl_FSData(const(Tcl_Filesystem)* fsPtr) nothrow;
 extern(C) const(char)* Tcl_FSGetTranslatedStringPath(Tcl_Interp* interp, Tcl_Obj* pathPtr) nothrow;
-extern(C) Tcl_Filesystem*  Tcl_FSGetFileSystemForPath(Tcl_Obj* pathPtr) nothrow;
+extern(C) const(Tcl_Filesystem)*  Tcl_FSGetFileSystemForPath(Tcl_Obj* pathPtr) nothrow;
 extern(C) Tcl_PathType Tcl_FSGetPathType(Tcl_Obj* pathPtr) nothrow;
 extern(C) int Tcl_OutputBuffered(Tcl_Channel chan) nothrow;
-extern(C) void Tcl_FSMountsChanged(Tcl_Filesystem* fsPtr) nothrow;
+extern(C) void Tcl_FSMountsChanged(const(Tcl_Filesystem)* fsPtr) nothrow;
 extern(C) int Tcl_EvalTokensStandard(Tcl_Interp* interp, Tcl_Token* tokenPtr, int count) nothrow;
 extern(C) void Tcl_GetTime(Tcl_Time* timeBuf) nothrow;
 extern(C) Tcl_Trace Tcl_CreateObjTrace(Tcl_Interp* interp, int level, int flags, Tcl_CmdObjTraceProc objProc, ClientData clientData, Tcl_CmdObjTraceDeleteProc delProc) nothrow;
-extern(C) int Tcl_GetCommandInfoFromToken(Tcl_Command token, Tcl_CmdInfo* infoPtr) nothrow;
+extern(C) int Tcl_GetCommandInfoFromToken(Tcl_Command token, const(Tcl_CmdInfo)* infoPtr) nothrow;
 extern(C) int Tcl_SetCommandInfoFromToken(Tcl_Command token, const(Tcl_CmdInfo)* infoPtr) nothrow;
 extern(C) Tcl_Obj* Tcl_DbNewWideIntObj(Tcl_WideInt wideValue, const(char)* file, int line) nothrow;
 extern(C) int Tcl_GetWideIntFromObj(Tcl_Interp* interp, Tcl_Obj* objPtr, Tcl_WideInt* widePtr) nothrow;
@@ -606,31 +606,86 @@ extern(C) int Tcl_AppendFormatToObj(Tcl_Interp* interp, Tcl_Obj* objPtr, const(c
 extern(C) Tcl_Obj* Tcl_ObjPrintf(const(char)* format, ...) nothrow;
 extern(C) void Tcl_AppendPrintfToObj(Tcl_Obj* objPtr, const(char)* format, ...) nothrow;
 
+/**
+ * 8.6.1 declarations
+ */
+extern(C) int Tcl_CancelEval(Tcl_Interp* interp, Tcl_Obj* resultObjPtr, ClientData clientData, int flags) nothrow;
+extern(C) int Tcl_Canceled(Tcl_Interp* interp, int flags) nothrow;
+extern(C) int Tcl_CreatePipe(Tcl_Interp* interp, Tcl_Channel* rchan, Tcl_Channel* wchan, int flags) nothrow;
+extern(C) Tcl_Command Tcl_NRCreateCommand(Tcl_Interp* interp, const(char)* cmdName, Tcl_ObjCmdProc proc, Tcl_ObjCmdProc nreProc, ClientData clientData, Tcl_CmdDeleteProc deleteProc) nothrow;
+extern(C) int Tcl_NREvalObj(Tcl_Interp* interp, Tcl_Obj* objPtr, int flags) nothrow;
+extern(C) int Tcl_NREvalObjv(Tcl_Interp* interp, int objc, const(Tcl_Obj*)* objv, int flags) nothrow;
+extern(C) int Tcl_NRCmdSwap(Tcl_Interp* interp, Tcl_Command cmd, int objc, const(Tcl_Obj*)* objv, int flags) nothrow;
+extern(C) void Tcl_NRAddCallback(Tcl_Interp* interp, Tcl_NRPostProc* postProcPtr, ClientData data0, ClientData data1, ClientData data2, ClientData data3) nothrow;
+extern(C) int Tcl_NRCallObjProc(Tcl_Interp* interp, Tcl_ObjCmdProc* objProc, ClientData clientData, int objc, const(Tcl_Obj*)* objv) nothrow;
+extern(C) uint Tcl_GetFSDeviceFromStat(const(Tcl_StatBuf)* statPtr) nothrow;
+extern(C) uint Tcl_GetFSInodeFromStat(const(Tcl_StatBuf)* statPtr) nothrow;
+extern(C) uint Tcl_GetModeFromStat(const(Tcl_StatBuf)* statPtr) nothrow;
+extern(C) int Tcl_GetLinkCountFromStat(const(Tcl_StatBuf)* statPtr) nothrow;
+extern(C) int Tcl_GetUserIdFromStat(const(Tcl_StatBuf)* statPtr) nothrow;
+extern(C) int Tcl_GetGroupIdFromStat(const(Tcl_StatBuf)* statPtr) nothrow;
+extern(C) int Tcl_GetDeviceTypeFromStat(const(Tcl_StatBuf)* statPtr) nothrow;
+extern(C) Tcl_WideInt Tcl_GetAccessTimeFromStat(const(Tcl_StatBuf)* statPtr) nothrow;
+extern(C) Tcl_WideInt Tcl_GetModificationTimeFromStat(const(Tcl_StatBuf)* statPtr) nothrow;
+extern(C) Tcl_WideInt Tcl_GetChangeTimeFromStat(const(Tcl_StatBuf)* statPtr) nothrow;
+extern(C) Tcl_WideUInt Tcl_GetSizeFromStat(const(Tcl_StatBuf)* statPtr) nothrow;
+extern(C) Tcl_WideUInt Tcl_GetBlocksFromStat(const(Tcl_StatBuf)* statPtr) nothrow;
+extern(C) uint Tcl_GetBlockSizeFromStat(const(Tcl_StatBuf)* statPtr) nothrow;
+extern(C) int Tcl_SetEnsembleParameterList(Tcl_Interp* interp, Tcl_Command token, Tcl_Obj* paramList) nothrow;
+extern(C) int Tcl_GetEnsembleParameterList(Tcl_Interp* interp, Tcl_Command token, Tcl_Obj** paramListPtr) nothrow;
+extern(C) int Tcl_ParseArgsObjv(Tcl_Interp* interp, const(Tcl_ArgvInfo)* argTable, int* objcPtr, const(Tcl_Obj*)* objv, Tcl_Obj*** remObjv) nothrow;
+extern(C) int Tcl_GetErrorLine(Tcl_Interp* interp) nothrow;
+extern(C) void Tcl_SetErrorLine(Tcl_Interp* interp, int lineNum) nothrow;
+extern(C) void Tcl_TransferResult(Tcl_Interp* sourceInterp, int result, Tcl_Interp* targetInterp) nothrow;
+extern(C) int Tcl_InterpActive(Tcl_Interp* interp) nothrow;
+extern(C) void Tcl_BackgroundException(Tcl_Interp* interp, int code) nothrow;
+extern(C) int Tcl_ZlibDeflate(Tcl_Interp* interp, int format, Tcl_Obj* data, int level, Tcl_Obj* gzipHeaderDictObj) nothrow;
+extern(C) int Tcl_ZlibInflate(Tcl_Interp* interp, int format, Tcl_Obj* data, int buffersize, Tcl_Obj* gzipHeaderDictObj) nothrow;
+extern(C) uint Tcl_ZlibCRC32(uint crc, const(ubyte)* buf, int len) nothrow;
+extern(C) uint Tcl_ZlibAdler32(uint adler, const(ubyte)* buf, int len) nothrow;
+extern(C) int Tcl_ZlibStreamInit(Tcl_Interp* interp, int mode, int format, int level, Tcl_Obj* dictObj, Tcl_ZLibStream* zshandle) nothrow;
+extern(C) Tcl_Obj* Tcl_ZlibStreamGetCommandName(Tcl_ZLibStream zshandle) nothrow;
+extern(C) int Tcl_ZlibStreamEof(Tcl_ZLibStream zshandle) nothrow;
+extern(C) int Tcl_ZlibStreamChecksum(Tcl_ZLibStream zshandle) nothrow;
+extern(C) int Tcl_ZlibStreamPut(Tcl_ZLibStream zshandle, Tcl_Obj* data, int flush) nothrow;
+extern(C) int Tcl_ZlibStreamGet(Tcl_ZLibStream zshandle, Tcl_Obj* data, int count) nothrow;
+extern(C) int Tcl_ZlibStreamClose(Tcl_ZLibStream zshandle) nothrow;
+extern(C) int Tcl_ZlibStreamReset(Tcl_ZLibStream zshandle) nothrow;
+extern(C) void Tcl_SetStartupScript(Tcl_Obj* path, const(char)* encoding) nothrow;
+extern(C) Tcl_Obj* Tcl_GetStartupScript(const(char)** encodingPtr) nothrow;
+extern(C) int Tcl_CloseEx(Tcl_Interp* interp, Tcl_Channel chan, int flags) nothrow;
+extern(C) int Tcl_NRExprObj(Tcl_Interp* interp, Tcl_Obj* objPtr, Tcl_Obj* resultPtr) nothrow;
+extern(C) int Tcl_NRSubstObj(Tcl_Interp* interp, Tcl_Obj* objPtr, int flags) nothrow;
+extern(C) int Tcl_LoadFile(Tcl_Interp* interp, Tcl_Obj* pathPtr, const(char*)* symv, int flags, void* procPtrs, Tcl_LoadHandle* handlePtr) nothrow;
+extern(C) void* Tcl_FindSymbol(Tcl_Interp* interp, Tcl_LoadHandle handle, const(char)* symbol) nothrow;
+extern(C) int Tcl_FSUnloadFile(Tcl_Interp* interp, Tcl_LoadHandle* handlePtr) nothrow;
+extern(C) void Tcl_ZlibStreamSetCompressionDictionary(Tcl_ZLibStream zhandle, Tcl_Obj* compressionDictionaryObj) nothrow;
+
 struct TclPlatStubs;
 struct TclIntStubs;
 struct TclIntPlatStubs;
 
 struct TclStubHooks
 {
-    TclPlatStubs* tclPlatStubs;
-    TclIntStubs* tclIntStubs;
-    TclIntPlatStubs* tclIntPlatStubs;
+    const(TclPlatStubs)* tclPlatStubs;
+    const(TclIntStubs)* tclIntStubs;
+    const(TclIntPlatStubs)* tclIntPlatStubs;
 }
 
 struct TclStubs
 {
 	int magic;
-	TclStubHooks* hooks;
+	const(TclStubHooks)* hooks;
 
 	extern(C) int function(Tcl_Interp* interp, const(char)* name, const(char)* version_, ClientData clientData) nothrow tcl_PkgProvideEx;
 	extern(C) const(char)* function(Tcl_Interp* interp, const(char)* name, const(char)* version_, int exact, ClientData* clientDataPtr) nothrow tcl_PkgRequireEx;
 	extern(C) void function(const(char)* format, ...) nothrow tcl_Panic;
-	extern(C) const(char)* function(uint size) nothrow tcl_Alloc;
+	extern(C) void* function(uint size) nothrow tcl_Alloc;
 	extern(C) void function(const(char)* ptr) nothrow tcl_Free;
-	extern(C) const(char)* function(const(char)* ptr, uint size) nothrow tcl_Realloc;
-	extern(C) const(char)* function(uint size, const(char)* file, int line) nothrow tcl_DbCkalloc;
-	extern(C) int function(const(char)* ptr, const(char)* file, int line) nothrow tcl_DbCkfree;
-	extern(C) const(char)* function(const(char)* ptr, uint size, const(char)* file, int line) nothrow tcl_DbCkrealloc;
+	extern(C) void* function(const(char)* ptr, uint size) nothrow tcl_Realloc;
+	extern(C) void* function(uint size, const(char)* file, int line) nothrow tcl_DbCkalloc;
+	extern(C) void function(const(char)* ptr, const(char)* file, int line) nothrow tcl_DbCkfree;
+	extern(C) void* function(const(char)* ptr, uint size, const(char)* file, int line) nothrow tcl_DbCkrealloc;
 
 	version(Posix)
 	{
@@ -638,7 +693,7 @@ struct TclStubs
 	}
 	else
 	{
-		void* reserved9;
+		void function() nothrow reserved9;
 	}
 
 	version(Posix)
@@ -647,12 +702,12 @@ struct TclStubs
 	}
 	else
 	{
-		void* reserved10;
+		void function() nothrow reserved10;
 	}
 
-	extern(C) void function(Tcl_Time* timePtr) nothrow tcl_SetTimer;
+	extern(C) void function(const(Tcl_Time)* timePtr) nothrow tcl_SetTimer;
 	extern(C) void function(int ms) nothrow tcl_Sleep;
-	extern(C) int function(Tcl_Time* timePtr) nothrow tcl_WaitForEvent;
+	extern(C) int function(const(Tcl_Time)* timePtr) nothrow tcl_WaitForEvent;
 	extern(C) int function(Tcl_Interp* interp, Tcl_Obj* objPtr) nothrow tcl_AppendAllObjTypes;
 	extern(C) void function(Tcl_Obj* objPtr, ...) nothrow tcl_AppendStringsToObj;
 	extern(C) void function(Tcl_Obj* objPtr, const(char)* bytes, int length) nothrow tcl_AppendToObj;
@@ -679,7 +734,7 @@ struct TclStubs
 	extern(C) int function(Tcl_Interp* interp, const(char)* src, int* intPtr) nothrow tcl_GetInt;
 	extern(C) int function(Tcl_Interp* interp, Tcl_Obj* objPtr, int* intPtr) nothrow tcl_GetIntFromObj;
 	extern(C) int function(Tcl_Interp* interp, Tcl_Obj* objPtr, c_long* longPtr) nothrow tcl_GetLongFromObj;
-	extern(C) Tcl_ObjType* function(const(char)* typeName) nothrow tcl_GetObjType;
+	extern(C) const(Tcl_ObjType)* function(const(char)* typeName) nothrow tcl_GetObjType;
 	extern(C) const(char)* function(Tcl_Obj* objPtr, int* lengthPtr) nothrow tcl_GetStringFromObj;
 	extern(C) void function(Tcl_Obj* objPtr) nothrow tcl_InvalidateStringRep;
 	extern(C) int function(Tcl_Interp* interp, Tcl_Obj* listPtr, Tcl_Obj* elemListPtr) nothrow tcl_ListObjAppendList;
@@ -727,7 +782,7 @@ struct TclStubs
 	extern(C) int function(const(char)* src, int length, const(char)* dst, int flags) nothrow tcl_ConvertCountedElement;
 	extern(C) int function(Tcl_Interp* slave, const(char)* slaveCmd, Tcl_Interp* target, const(char)* targetCmd, int argc, const(char)** argv) nothrow tcl_CreateAlias;
 	extern(C) int function(Tcl_Interp* slave, const(char)* slaveCmd, Tcl_Interp* target, const(char)* targetCmd, int objc, const(Tcl_Obj*)* objv) nothrow tcl_CreateAliasObj;
-	extern(C) Tcl_Channel function(Tcl_ChannelType* typePtr, const(char)* chanName, ClientData instanceData, int mask) nothrow tcl_CreateChannel;
+	extern(C) Tcl_Channel function(const(Tcl_ChannelType)* typePtr, const(char)* chanName, ClientData instanceData, int mask) nothrow tcl_CreateChannel;
 	extern(C) void function(Tcl_Channel chan, int mask, Tcl_ChannelProc proc, ClientData clientData) nothrow tcl_CreateChannelHandler;
 	extern(C) void function(Tcl_Channel chan, Tcl_CloseProc proc, ClientData clientData) nothrow tcl_CreateCloseHandler;
 	extern(C) Tcl_Command function(Tcl_Interp* interp, const(char)* cmdName, Tcl_CmdProc proc, ClientData clientData, Tcl_CmdDeleteProc deleteProc) nothrow tcl_CreateCommand;
@@ -797,7 +852,7 @@ struct TclStubs
 	extern(C) int function(Tcl_Channel chan) nothrow tcl_GetChannelMode;
 	extern(C) const(char)* function(Tcl_Channel chan) nothrow tcl_GetChannelName;
 	extern(C) int function(Tcl_Interp* interp, Tcl_Channel chan, const(char)* optionName, Tcl_DString* dsPtr) nothrow tcl_GetChannelOption;
-	extern(C) Tcl_ChannelType* function(Tcl_Channel chan) nothrow tcl_GetChannelType;
+	extern(C) const(Tcl_ChannelType)* function(Tcl_Channel chan) nothrow tcl_GetChannelType;
 	extern(C) int function(Tcl_Interp* interp, const(char)* cmdName, Tcl_CmdInfo* infoPtr) nothrow tcl_GetCommandInfo;
 	extern(C) const(char)* function(Tcl_Interp* interp, Tcl_Command command) nothrow tcl_GetCommandName;
 	extern(C) int function() nothrow tcl_GetErrno;
@@ -813,7 +868,7 @@ struct TclStubs
 	}
 	else
 	{
-		void* reserved167;
+		void function() nothrow reserved167;
 	}
 
 	extern(C) Tcl_PathType function(const(char)* path) nothrow tcl_GetPathType;
@@ -836,7 +891,7 @@ struct TclStubs
 	extern(C) int function(Tcl_Interp* interp) nothrow tcl_IsSafe;
 	extern(C) const(char)* function(int argc, const(char)** argv, Tcl_DString* resultPtr) nothrow tcl_JoinPath;
 	extern(C) int function(Tcl_Interp* interp, const(char)* varName, const(char)* addr, int type) nothrow tcl_LinkVar;
-	void* reserved188;
+	void function() nothrow reserved188;
 	extern(C) Tcl_Channel function(ClientData handle, int mode) nothrow tcl_MakeFileChannel;
 	extern(C) int function(Tcl_Interp* interp) nothrow tcl_MakeSafe;
 	extern(C) Tcl_Channel function(ClientData tcpSocket) nothrow tcl_MakeTcpClientChannel;
@@ -859,7 +914,7 @@ struct TclStubs
 	extern(C) int function(Tcl_Interp* interp, const(char)* cmd, int flags) nothrow tcl_RecordAndEval;
 	extern(C) int function(Tcl_Interp* interp, Tcl_Obj* cmdPtr, int flags) nothrow tcl_RecordAndEvalObj;
 	extern(C) void function(Tcl_Interp* interp, Tcl_Channel chan) nothrow tcl_RegisterChannel;
-	extern(C) void function(Tcl_ObjType* typePtr) nothrow tcl_RegisterObjType;
+	extern(C) void function(const(Tcl_ObjType)* typePtr) nothrow tcl_RegisterObjType;
 	extern(C) Tcl_RegExp function(Tcl_Interp* interp, const(char)* pattern) nothrow tcl_RegExpCompile;
 	extern(C) int function(Tcl_Interp* interp, Tcl_RegExp regexp, const(char)* text, const(char)* start) nothrow tcl_RegExpExec;
 	extern(C) int function(Tcl_Interp* interp, const(char)* text, const(char)* pattern) nothrow tcl_RegExpMatch;
@@ -877,7 +932,7 @@ struct TclStubs
 	extern(C) int function(Tcl_Interp* interp, const(char)* cmdName, const(Tcl_CmdInfo)* infoPtr) nothrow tcl_SetCommandInfo;
 	extern(C) void function(int err) nothrow tcl_SetErrno;
 	extern(C) void function(Tcl_Interp* interp, ...) nothrow tcl_SetErrorCode;
-	extern(C) void function(Tcl_Time* timePtr) nothrow tcl_SetMaxBlockTime;
+	extern(C) void function(const(Tcl_Time)* timePtr) nothrow tcl_SetMaxBlockTime;
 	extern(C) void function(Tcl_PanicProc panicProc) nothrow tcl_SetPanicProc;
 	extern(C) int function(Tcl_Interp* interp, int depth) nothrow tcl_SetRecursionLimit;
 	extern(C) void function(Tcl_Interp* interp, const(char)* result, Tcl_FreeProc freeProc) nothrow tcl_SetResult;
@@ -929,11 +984,11 @@ struct TclStubs
 	extern(C) void function(const(char)* format, va_list argList) nothrow tcl_PanicVA;
 	extern(C) void function(int* major, int* minor, int* patchLevel, int* type) nothrow tcl_GetVersion;
 	extern(C) void function(Tcl_Interp* interp) nothrow tcl_InitMemory;
-	extern(C) Tcl_Channel function(Tcl_Interp* interp, Tcl_ChannelType* typePtr, ClientData instanceData, int mask, Tcl_Channel prevChan) nothrow tcl_StackChannel;
+	extern(C) Tcl_Channel function(Tcl_Interp* interp, const(Tcl_ChannelType)* typePtr, ClientData instanceData, int mask, Tcl_Channel prevChan) nothrow tcl_StackChannel;
 	extern(C) int function(Tcl_Interp* interp, Tcl_Channel chan) nothrow tcl_UnstackChannel;
 	extern(C) Tcl_Channel function(Tcl_Channel chan) nothrow tcl_GetStackedChannel;
 	extern(C) void function(Tcl_MainLoopProc proc) nothrow tcl_SetMainLoop;
-	void* reserved285;
+	void function() nothrow reserved285;
 	extern(C) void function(Tcl_Obj* objPtr, Tcl_Obj* appendObjPtr) nothrow tcl_AppendObjToObj;
 	extern(C) Tcl_Encoding function(const(Tcl_EncodingType)* typePtr) nothrow tcl_CreateEncoding;
 	extern(C) void function(Tcl_ExitProc proc, ClientData clientData) nothrow tcl_CreateThreadExitHandler;
@@ -959,7 +1014,7 @@ struct TclStubs
 	extern(C) void function(Tcl_Mutex* mutexPtr) nothrow tcl_MutexLock;
 	extern(C) void function(Tcl_Mutex* mutexPtr) nothrow tcl_MutexUnlock;
 	extern(C) void function(Tcl_Condition* condPtr) nothrow tcl_ConditionNotify;
-	extern(C) void function(Tcl_Condition* condPtr, Tcl_Mutex* mutexPtr, Tcl_Time* timePtr) nothrow tcl_ConditionWait;
+	extern(C) void function(Tcl_Condition* condPtr, Tcl_Mutex* mutexPtr, const(Tcl_Time)* timePtr) nothrow tcl_ConditionWait;
 	extern(C) int function(const(char)* src, int length) nothrow tcl_NumUtfChars;
 	extern(C) int function(Tcl_Channel channel, Tcl_Obj* objPtr, int charsToRead, int appendFlag) nothrow tcl_ReadChars;
 	extern(C) void function(Tcl_Interp* interp, Tcl_SavedResult* statePtr) nothrow tcl_RestoreResult;
@@ -1069,17 +1124,17 @@ struct TclStubs
 	extern(C) int function(const(char)* channelName) nothrow tcl_IsChannelExisting;
 	extern(C) int function(const(Tcl_UniChar)* ucs, const(Tcl_UniChar)* uct, c_ulong numChars) nothrow tcl_UniCharNcasecmp;
 	extern(C) int function(const(Tcl_UniChar)* uniStr, const(Tcl_UniChar)* uniPattern, int nocase) nothrow tcl_UniCharCaseMatch;
-	extern(C) Tcl_HashEntry* function(Tcl_HashTable* tablePtr, const(char)* key) nothrow tcl_FindHashEntry;
-	extern(C) Tcl_HashEntry* function(Tcl_HashTable* tablePtr, const(char)* key, int* newPtr) nothrow tcl_CreateHashEntry;
-	extern(C) void function(Tcl_HashTable* tablePtr, int keyType, Tcl_HashKeyType* typePtr) nothrow tcl_InitCustomHashTable;
+	extern(C) Tcl_HashEntry* function(Tcl_HashTable* tablePtr, const(void)* key) nothrow tcl_FindHashEntry;
+	extern(C) Tcl_HashEntry* function(Tcl_HashTable* tablePtr, const(void)* key, int* newPtr) nothrow tcl_CreateHashEntry;
+	extern(C) void function(Tcl_HashTable* tablePtr, int keyType, const(Tcl_HashKeyType)* typePtr) nothrow tcl_InitCustomHashTable;
 	extern(C) void function(Tcl_HashTable* tablePtr) nothrow tcl_InitObjHashTable;
 	extern(C) ClientData function(Tcl_Interp* interp, const(char)* varName, int flags, Tcl_CommandTraceProc procPtr, ClientData prevClientData) nothrow tcl_CommandTraceInfo;
 	extern(C) int function(Tcl_Interp* interp, const(char)* varName, int flags, Tcl_CommandTraceProc proc, ClientData clientData) nothrow tcl_TraceCommand;
 	extern(C) void function(Tcl_Interp* interp, const(char)* varName, int flags, Tcl_CommandTraceProc proc, ClientData clientData) nothrow tcl_UntraceCommand;
-	extern(C) const(char)* function(uint size) nothrow tcl_AttemptAlloc;
-	extern(C) const(char)* function(uint size, const(char)* file, int line) nothrow tcl_AttemptDbCkalloc;
-	extern(C) const(char)* function(const(char)* ptr, uint size) nothrow tcl_AttemptRealloc;
-	extern(C) const(char)* function(const(char)* ptr, uint size, const(char)* file, int line) nothrow tcl_AttemptDbCkrealloc;
+	extern(C) void* function(uint size) nothrow tcl_AttemptAlloc;
+	extern(C) void* function(uint size, const(char)* file, int line) nothrow tcl_AttemptDbCkalloc;
+	extern(C) void* function(const(char)* ptr, uint size) nothrow tcl_AttemptRealloc;
+	extern(C) void* function(const(char)* ptr, uint size, const(char)* file, int line) nothrow tcl_AttemptDbCkrealloc;
 	extern(C) int function(Tcl_Obj* objPtr, int length) nothrow tcl_AttemptSetObjLength;
 	extern(C) Tcl_ThreadId function(Tcl_Channel channel) nothrow tcl_GetChannelThread;
 	extern(C) Tcl_UniChar* function(Tcl_Obj* objPtr, int* lengthPtr) nothrow tcl_GetUnicodeFromObj;
@@ -1113,26 +1168,26 @@ struct TclStubs
 	extern(C) int function(Tcl_Obj* firstPtr, Tcl_Obj* secondPtr) nothrow tcl_FSEqualPaths;
 	extern(C) Tcl_Obj* function(Tcl_Interp* interp, Tcl_Obj* pathPtr) nothrow tcl_FSGetNormalizedPath;
 	extern(C) Tcl_Obj* function(Tcl_Obj* pathPtr, int objc, const(Tcl_Obj*)* objv) nothrow tcl_FSJoinToPath;
-	extern(C) ClientData function(Tcl_Obj* pathPtr, Tcl_Filesystem* fsPtr) nothrow tcl_FSGetInternalRep;
+	extern(C) ClientData function(Tcl_Obj* pathPtr, const(Tcl_Filesystem)* fsPtr) nothrow tcl_FSGetInternalRep;
 	extern(C) Tcl_Obj* function(Tcl_Interp* interp, Tcl_Obj* pathPtr) nothrow tcl_FSGetTranslatedPath;
 	extern(C) int function(Tcl_Interp* interp, Tcl_Obj* fileName) nothrow tcl_FSEvalFile;
-	extern(C) Tcl_Obj* function(Tcl_Filesystem* fromFilesystem, ClientData clientData) nothrow tcl_FSNewNativePath;
-	extern(C) const(char)* function(Tcl_Obj* pathPtr) nothrow tcl_FSGetNativePath;
+	extern(C) Tcl_Obj* function(const(Tcl_Filesystem)* fromFilesystem, ClientData clientData) nothrow tcl_FSNewNativePath;
+	extern(C) const(void)* function(Tcl_Obj* pathPtr) nothrow tcl_FSGetNativePath;
 	extern(C) Tcl_Obj* function(Tcl_Obj* pathPtr) nothrow tcl_FSFileSystemInfo;
 	extern(C) Tcl_Obj* function(Tcl_Obj* pathPtr) nothrow tcl_FSPathSeparator;
 	extern(C) Tcl_Obj* function() nothrow tcl_FSListVolumes;
-	extern(C) int function(ClientData clientData, Tcl_Filesystem* fsPtr) nothrow tcl_FSRegister;
-	extern(C) int function(Tcl_Filesystem* fsPtr) nothrow tcl_FSUnregister;
-	extern(C) ClientData function(Tcl_Filesystem* fsPtr) nothrow tcl_FSData;
+	extern(C) int function(ClientData clientData, const(Tcl_Filesystem)* fsPtr) nothrow tcl_FSRegister;
+	extern(C) int function(const(Tcl_Filesystem)* fsPtr) nothrow tcl_FSUnregister;
+	extern(C) ClientData function(const(Tcl_Filesystem)* fsPtr) nothrow tcl_FSData;
 	extern(C) const(char)* function(Tcl_Interp* interp, Tcl_Obj* pathPtr) nothrow tcl_FSGetTranslatedStringPath;
-	extern(C) Tcl_Filesystem* function(Tcl_Obj* pathPtr) nothrow tcl_FSGetFileSystemForPath;
+	extern(C) const(Tcl_Filesystem)* function(Tcl_Obj* pathPtr) nothrow tcl_FSGetFileSystemForPath;
 	extern(C) Tcl_PathType function(Tcl_Obj* pathPtr) nothrow tcl_FSGetPathType;
 	extern(C) int function(Tcl_Channel chan) nothrow tcl_OutputBuffered;
-	extern(C) void function(Tcl_Filesystem* fsPtr) nothrow tcl_FSMountsChanged;
+	extern(C) void function(const(Tcl_Filesystem)* fsPtr) nothrow tcl_FSMountsChanged;
 	extern(C) int function(Tcl_Interp* interp, Tcl_Token* tokenPtr, int count) nothrow tcl_EvalTokensStandard;
 	extern(C) void function(Tcl_Time* timeBuf) nothrow tcl_GetTime;
 	extern(C) Tcl_Trace function(Tcl_Interp* interp, int level, int flags, Tcl_CmdObjTraceProc objProc, ClientData clientData, Tcl_CmdObjTraceDeleteProc delProc) nothrow tcl_CreateObjTrace;
-	extern(C) int function(Tcl_Command token, Tcl_CmdInfo* infoPtr) nothrow tcl_GetCommandInfoFromToken;
+	extern(C) int function(Tcl_Command token, const(Tcl_CmdInfo)* infoPtr) nothrow tcl_GetCommandInfoFromToken;
 	extern(C) int function(Tcl_Command token, const(Tcl_CmdInfo)* infoPtr) nothrow tcl_SetCommandInfoFromToken;
 	extern(C) Tcl_Obj* function(Tcl_WideInt wideValue, const(char)* file, int line) nothrow tcl_DbNewWideIntObj;
 	extern(C) int function(Tcl_Interp* interp, Tcl_Obj* objPtr, Tcl_WideInt* widePtr) nothrow tcl_GetWideIntFromObj;
@@ -1228,6 +1283,61 @@ struct TclStubs
 	extern(C) int function(Tcl_Interp* interp, Tcl_Obj* objPtr, const(char)* format, int objc, const(Tcl_Obj*)* objv) nothrow tcl_AppendFormatToObj;
 	extern(C) Tcl_Obj* function(const(char)* format, ...) nothrow tcl_ObjPrintf;
 	extern(C) void function(Tcl_Obj* objPtr, const(char)* format, ...) nothrow tcl_AppendPrintfToObj;
+
+	/**
+	 * 8.6.1 declarations
+	 */
+	extern(C) int function(Tcl_Interp* interp, Tcl_Obj* resultObjPtr, ClientData clientData, int flags) nothrow Tcl_CancelEval;
+	extern(C) int function(Tcl_Interp* interp, int flags) nothrow Tcl_Canceled;
+	extern(C) int function(Tcl_Interp* interp, Tcl_Channel* rchan, Tcl_Channel* wchan, int flags) nothrow Tcl_CreatePipe;
+	extern(C) Tcl_Command function(Tcl_Interp* interp, const(char)* cmdName, Tcl_ObjCmdProc proc, Tcl_ObjCmdProc nreProc, ClientData clientData, Tcl_CmdDeleteProc deleteProc) nothrow Tcl_NRCreateCommand;
+	extern(C) int function(Tcl_Interp* interp, Tcl_Obj* objPtr, int flags) nothrow Tcl_NREvalObj;
+	extern(C) int function(Tcl_Interp* interp, int objc, const(Tcl_Obj*)* objv, int flags) nothrow Tcl_NREvalObjv;
+	extern(C) int function(Tcl_Interp* interp, Tcl_Command cmd, int objc, const(Tcl_Obj*)* objv, int flags) nothrow Tcl_NRCmdSwap;
+	extern(C) void function(Tcl_Interp* interp, Tcl_NRPostProc* postProcPtr, ClientData data0, ClientData data1, ClientData data2, ClientData data3) nothrow Tcl_NRAddCallback;
+	extern(C) int function(Tcl_Interp* interp, Tcl_ObjCmdProc* objProc, ClientData clientData, int objc, const(Tcl_Obj*)* objv) nothrow Tcl_NRCallObjProc;
+	extern(C) uint function(const(Tcl_StatBuf)* statPtr) nothrow Tcl_GetFSDeviceFromStat;
+	extern(C) uint function(const(Tcl_StatBuf)* statPtr) nothrow Tcl_GetFSInodeFromStat;
+	extern(C) uint function(const(Tcl_StatBuf)* statPtr) nothrow Tcl_GetModeFromStat;
+	extern(C) int function(const(Tcl_StatBuf)* statPtr) nothrow Tcl_GetLinkCountFromStat;
+	extern(C) int function(const(Tcl_StatBuf)* statPtr) nothrow Tcl_GetUserIdFromStat;
+	extern(C) int function(const(Tcl_StatBuf)* statPtr) nothrow Tcl_GetGroupIdFromStat;
+	extern(C) int function(const(Tcl_StatBuf)* statPtr) nothrow Tcl_GetDeviceTypeFromStat;
+	extern(C) Tcl_WideInt function(const(Tcl_StatBuf)* statPtr) nothrow Tcl_GetAccessTimeFromStat;
+	extern(C) Tcl_WideInt function(const(Tcl_StatBuf)* statPtr) nothrow Tcl_GetModificationTimeFromStat;
+	extern(C) Tcl_WideInt function(const(Tcl_StatBuf)* statPtr) nothrow Tcl_GetChangeTimeFromStat;
+	extern(C) Tcl_WideUInt function(const(Tcl_StatBuf)* statPtr) nothrow Tcl_GetSizeFromStat;
+	extern(C) Tcl_WideUInt function(const(Tcl_StatBuf)* statPtr) nothrow Tcl_GetBlocksFromStat;
+	extern(C) uint function(const(Tcl_StatBuf)* statPtr) nothrow Tcl_GetBlockSizeFromStat;
+	extern(C) int function(Tcl_Interp* interp, Tcl_Command token, Tcl_Obj* paramList) nothrow Tcl_SetEnsembleParameterList;
+	extern(C) int function(Tcl_Interp* interp, Tcl_Command token, Tcl_Obj** paramListPtr) nothrow Tcl_GetEnsembleParameterList;
+	extern(C) int function(Tcl_Interp* interp, const(Tcl_ArgvInfo)* argTable, int* objcPtr, const(Tcl_Obj*)* objv, Tcl_Obj*** remObjv) nothrow Tcl_ParseArgsObjv;
+	extern(C) int function(Tcl_Interp* interp) nothrow Tcl_GetErrorLine;
+	extern(C) void function(Tcl_Interp* interp, int lineNum) nothrow Tcl_SetErrorLine;
+	extern(C) void function(Tcl_Interp* sourceInterp, int result, Tcl_Interp* targetInterp) nothrow Tcl_TransferResult;
+	extern(C) int function(Tcl_Interp* interp) nothrow Tcl_InterpActive;
+	extern(C) void function(Tcl_Interp* interp, int code) nothrow Tcl_BackgroundException;
+	extern(C) int function(Tcl_Interp* interp, int format, Tcl_Obj* data, int level, Tcl_Obj* gzipHeaderDictObj) nothrow Tcl_ZlibDeflate;
+	extern(C) int function(Tcl_Interp* interp, int format, Tcl_Obj* data, int buffersize, Tcl_Obj* gzipHeaderDictObj) nothrow Tcl_ZlibInflate;
+	extern(C) uint function(uint crc, const(ubyte)* buf, int len) nothrow Tcl_ZlibCRC32;
+	extern(C) uint function(uint adler, const(ubyte)* buf, int len) nothrow Tcl_ZlibAdler32;
+	extern(C) int function(Tcl_Interp* interp, int mode, int format, int level, Tcl_Obj* dictObj, Tcl_ZLibStream* zshandle) nothrow Tcl_ZlibStreamInit;
+	extern(C) Tcl_Obj* function(Tcl_ZLibStream zshandle) nothrow Tcl_ZlibStreamGetCommandName;
+	extern(C) int function(Tcl_ZLibStream zshandle) nothrow Tcl_ZlibStreamEof;
+	extern(C) int function(Tcl_ZLibStream zshandle) nothrow Tcl_ZlibStreamChecksum;
+	extern(C) int function(Tcl_ZLibStream zshandle, Tcl_Obj* data, int flush) nothrow Tcl_ZlibStreamPut;
+	extern(C) int function(Tcl_ZLibStream zshandle, Tcl_Obj* data, int count) nothrow Tcl_ZlibStreamGet;
+	extern(C) int function(Tcl_ZLibStream zshandle) nothrow Tcl_ZlibStreamClose;
+	extern(C) int function(Tcl_ZLibStream zshandle) nothrow Tcl_ZlibStreamReset;
+	extern(C) void function(Tcl_Obj* path, const(char)* encoding) nothrow Tcl_SetStartupScript;
+	extern(C) Tcl_Obj* function(const(char)** encodingPtr) nothrow Tcl_GetStartupScript;
+	extern(C) int function(Tcl_Interp* interp, Tcl_Channel chan, int flags) nothrow Tcl_CloseEx;
+	extern(C) int function(Tcl_Interp* interp, Tcl_Obj* objPtr, Tcl_Obj* resultPtr) nothrow Tcl_NRExprObj;
+	extern(C) int function(Tcl_Interp* interp, Tcl_Obj* objPtr, int flags) nothrow Tcl_NRSubstObj;
+	extern(C) int function(Tcl_Interp* interp, Tcl_Obj* pathPtr, const(char*)* symv, int flags, void* procPtrs, Tcl_LoadHandle* handlePtr) nothrow Tcl_LoadFile;
+	extern(C) void* function(Tcl_Interp* interp, Tcl_LoadHandle handle, const(char)* symbol) nothrow Tcl_FindSymbol;
+	extern(C) int function(Tcl_Interp* interp, Tcl_LoadHandle* handlePtr) nothrow Tcl_FSUnloadFile;
+	extern(C) void function(Tcl_ZLibStream zhandle, Tcl_Obj* compressionDictionaryObj) nothrow Tcl_ZlibStreamSetCompressionDictionary;
 }
 
-extern(C) shared TclStubs* tclStubsPtr;
+extern(C) shared const(TclStubs)* tclStubsPtr;

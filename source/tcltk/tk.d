@@ -12,21 +12,20 @@ import x11.Xlib;
 
 public import tcltk.tcl;
 
-static if (TCL_MAJOR_VERSION != 8 || TCL_MINOR_VERSION != 5)
+static if (TCL_MAJOR_VERSION != 8 || TCL_MINOR_VERSION < 6)
 {
-	static assert(false, "Error Tk 8.5 must be compiled with tcl.h from Tcl 8.5");
+	static assert(false, "Error Tk 8.6 must be compiled with tcl.h from Tcl 8.6 or better");
 }
 
 /*
  * When version numbers change here, you must also go into the following files
  * and update the version numbers:
  *
- * library/tk.tcl	(2 LOC patch)
+ * library/tk.tcl	(1 LOC patch)
  * unix/configure.in	(2 LOC Major, 2 LOC minor, 1 LOC patch)
  * win/configure.in	(as above)
  * README		(sections 0 and 1)
- * macosx/Wish.xcode/project.pbxproj (not patchlevel) 1 LOC
- * macosx/Wish-Common.xcconfig (not patchlevel) 1 LOC
+ * macosx/Tk-Common.xcconfig (not patchlevel) 1 LOC
  * win/README		(not patchlevel)
  * unix/README		(not patchlevel)
  * unix/tk.spec		(1 LOC patch)
@@ -36,11 +35,11 @@ static if (TCL_MAJOR_VERSION != 8 || TCL_MINOR_VERSION != 5)
  * the version of Tcl that this release of Tk is compiled against.
  */
 enum TK_MAJOR_VERSION  = 8;
-enum TK_MINOR_VERSION  = 5;
+enum TK_MINOR_VERSION  = 6;
 enum TK_RELEASE_LEVEL  = TCL_FINAL_RELEASE;
-enum TK_RELEASE_SERIAL = 11;
-enum TK_VERSION        = "8.5";
-enum TK_PATCH_LEVEL    = "8.5.11";
+enum TK_RELEASE_SERIAL = 1;
+enum TK_VERSION        = "8.6";
+enum TK_PATCH_LEVEL    = "8.6.1";
 
 /*
  * Dummy types that are used by clients:
@@ -161,7 +160,7 @@ struct Tk_OptionSpec
 	/* An alternate place to put option-specific
 	 * data. Used for the monochrome default value
 	 * for colors, etc. */
-	ClientData clientData;
+	const(ClientData) clientData;
 
 	/* An arbitrary bit mask defined by the class
 	 * manager; typically bits correspond to
@@ -366,7 +365,7 @@ static if (!__NO_OLD_CONFIG)
 		 * pointer to info about how to parse and
 		 * print the option. Otherwise it is
 		 * irrelevant. */
-		Tk_CustomOption* customPtr;
+		const(Tk_CustomOption)* customPtr;
 	}
 
 	/*
@@ -585,7 +584,6 @@ enum TK_IGNORE_NEWLINES = 16;
  * Widget class procedures used to implement platform specific widget
  * behavior.
  */
-
 alias extern(C) Window function(Tk_Window tkwin, Window parent, ClientData instanceData) nothrow Tk_ClassCreateProc;
 alias extern(C) void function(ClientData instanceData) nothrow Tk_ClassWorldChangedProc;
 alias extern(C) void function(Tk_Window tkwin, XEvent* eventPtr) nothrow Tk_ClassModalProc;
@@ -789,6 +787,7 @@ struct Tk_FakeWin
     int internalBorderBottom;
     int minReqWidth;
     int minReqHeight;
+	char* dummy20; /* geometryMaster */
 }
 
 /*
@@ -831,9 +830,6 @@ struct Tk_FakeWin
  *				embedded application), and both the containing
  *				and embedded halves are associated with
  *				windows in this particular process.
- * TK_DEFER_MODAL:		1 means that this window has deferred a modal
- *				loop until all of the bindings for the current
- *				event have been invoked.
  * TK_WRAPPER:			1 means that this window is the extra wrapper
  *				window created around a toplevel to hold the
  *				menubar under Unix. See tkUnixWm.c for more
@@ -869,7 +865,6 @@ enum TK_WM_COLORMAP_WINDOW  = 0x80;
 enum TK_EMBEDDED            = 0x100;
 enum TK_CONTAINER           = 0x200;
 enum TK_BOTH_HALVES         = 0x400;
-enum TK_DEFER_MODAL         = 0x800;
 enum TK_WRAPPER             = 0x1000;
 enum TK_REPARENTED          = 0x2000;
 enum TK_ANONYMOUS_WINDOW    = 0x4000;
@@ -1102,10 +1097,28 @@ alias extern(C) int function(Tk_Canvas canvas, Tk_Item* itemPtr, double* rectPtr
 alias extern(C) int function(Tcl_Interp* interp, Tk_Canvas canvas, Tk_Item* itemPtr, int prepass) nothrow Tk_ItemPostscriptProc;
 alias extern(C) void function(Tk_Canvas canvas, Tk_Item* itemPtr, double originX, double originY, double scaleX, double scaleY) nothrow Tk_ItemScaleProc;
 alias extern(C) void function(Tk_Canvas canvas, Tk_Item* itemPtr, double deltaX, double deltaY) nothrow Tk_ItemTranslateProc;
-alias extern(C) int function(Tcl_Interp* interp, Tk_Canvas canvas, Tk_Item* itemPtr, const(char)* indexString, int* indexPtr) nothrow Tk_ItemIndexProc;
+
+static if (USE_OLD_CANVAS)
+{
+	alias extern(C) int function(Tcl_Interp* interp, Tk_Canvas canvas, Tk_Item* itemPtr, const(char)* indexString, int* indexPtr) nothrow Tk_ItemIndexProc;
+}
+else
+{
+	alias extern(C) int function(Tcl_Interp* interp, Tk_Canvas canvas, Tk_Item* itemPtr, Tcl_Obj* indexString, int* indexPtr) nothrow Tk_ItemIndexProc;
+}
+
 alias extern(C) void function(Tk_Canvas canvas, Tk_Item* itemPtr, int index) nothrow Tk_ItemCursorProc;
 alias extern(C) int function(Tk_Canvas canvas, Tk_Item* itemPtr, int offset, const(char)* buffer, int maxBytes) nothrow Tk_ItemSelectionProc;
-alias extern(C) void function(Tk_Canvas canvas, Tk_Item* itemPtr, int beforeThis, const(char)* string) nothrow Tk_ItemInsertProc;
+
+static if (USE_OLD_CANVAS)
+{
+	alias extern(C) void function(Tk_Canvas canvas, Tk_Item* itemPtr, int beforeThis, const(char)* string) nothrow Tk_ItemInsertProc;
+}
+else
+{
+	alias extern(C) void function(Tk_Canvas canvas, Tk_Item* itemPtr, int beforeThis, Tcl_Obj* string) nothrow Tk_ItemInsertProc;
+}
+
 alias extern(C) void function(Tk_Canvas canvas, Tk_Item* itemPtr, int first, int last) nothrow Tk_ItemDCharsProc;
 
 static if (!__NO_OLD_CONFIG)
@@ -1131,7 +1144,7 @@ static if (!__NO_OLD_CONFIG)
 		/* Pointer to array of configuration specs for
 		 * this type. Used for returning configuration
 		 * info. */
-		Tk_ConfigSpec* configSpecs;
+		const(Tk_ConfigSpec)* configSpecs;
 
 		/* Procedure to call to change configuration
 		 * options. */
@@ -1206,6 +1219,8 @@ static if (!__NO_OLD_CONFIG)
 		void* reserved3;
 		void* reserved4;
 	}
+
+	enum TK_MOVABLE_POINTS = 2;
 }
 else
 {
@@ -1438,7 +1453,7 @@ static if (USE_OLD_IMAGE)
 }
 else
 {
-	alias extern(C) int function(Tcl_Interp* interp, const(char)* name, int objc, const(Tcl_Obj*)[] objv, Tk_ImageType* typePtr, Tk_ImageMaster master, ClientData* masterDataPtr) nothrow Tk_ImageCreateProc;
+	alias extern(C) int function(Tcl_Interp* interp, const(char)* name, int objc, const(Tcl_Obj*)[] objv, const(Tk_ImageType)* typePtr, Tk_ImageMaster master, ClientData* masterDataPtr) nothrow Tk_ImageCreateProc;
 }
 alias extern(C) ClientData function(Tk_Window tkwin, ClientData masterData) nothrow Tk_ImageGetProc;
 alias extern(C) void function(ClientData instanceData, Display* display, Drawable drawable, int imageX, int imageY, int width, int height, int drawableX, int drawableY) nothrow Tk_ImageDisplayProc;
@@ -1608,12 +1623,6 @@ struct Tk_PhotoImageFormat
 	Tk_PhotoImageFormat* nextPtr;
 }
 
-static if (USE_OLD_IMAGE)
-{
-	alias Tk_CreateOldImageType        = Tk_CreateImageType;
-	alias Tk_CreateOldPhotoImageFormat = Tk_CreatePhotoImageFormat;
-}
-
 /*
  *--------------------------------------------------------------
  *
@@ -1741,14 +1750,14 @@ enum USE_TK_STUBS = false;
 
 static if (USE_TK_STUBS)
 {
+	extern(C) const(char)* Tk_InitStubs(Tcl_Interp* interp, const(char)* version_, int exact) nothrow;
+}
+else
+{
 	const(char)* Tk_InitStubs(Tcl_Interp* interp, const(char)* version_, int exact)
 	{
 		return Tk_PkgInitStubsCheck(interp, version_, exact);
 	}
-}
-else
-{
-	extern(C) const(char)* Tk_InitStubs(Tcl_Interp* interp, const(char)* version_, int exact) nothrow;
 }
 
 /*

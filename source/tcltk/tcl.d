@@ -39,11 +39,11 @@ enum TCL_FINAL_RELEASE = 2;
  * tools/tclSplash.bmp	(not patchlevel)
  */
 enum TCL_MAJOR_VERSION  = 8;
-enum TCL_MINOR_VERSION  = 5;
+enum TCL_MINOR_VERSION  = 6;
 enum TCL_RELEASE_LEVEL  = TCL_FINAL_RELEASE;
-enum TCL_RELEASE_SERIAL = 11;
-enum TCL_VERSION        = "8.5";
-enum TCL_PATCH_LEVEL    = "8.5.11";
+enum TCL_RELEASE_SERIAL = 1;
+enum TCL_VERSION        = "8.6";
+enum TCL_PATCH_LEVEL    = "8.6.1";
 
 /*
  * Tcl's public routine Tcl_FSSeek() uses the values SEEK_SET, SEEK_CUR, and
@@ -168,20 +168,26 @@ struct Tcl_Interp
 {
 	/*
 	 * If the last command returned a string result, this points to it.
+	 *
+	 * Use Tcl_GetStringResult/Tcl_SetResult instead of using this directly.
 	 */
-	const(char)* result;
+	deprecated const(char)* result;
 	/*
 	 * Zero means the string result is statically allocated. TCL_DYNAMIC
 	 * means it was allocated with ckalloc and should be freed with ckfree.
 	 * Other values give the address of function to invoke to free the result.
 	 * Tcl_Eval must free it before executing next command.
+	 *
+	 * Use Tcl_GetStringResult/Tcl_SetResult instead of using this directly.
 	 */
-	extern(C) void function(char* blockPtr) nothrow freeProc;
+	deprecated extern(C) void function(char* blockPtr) nothrow freeProc;
 	/*
 	 * When TCL_ERROR is returned, this gives the line number within the
 	 * command where the error occurred (1 if first line).
+	 *
+	 * Use Tcl_GetErrorLine/Tcl_SetErrorLine instead of using this directly.
 	 */
-	int errorLine;
+	deprecated int errorLine;
 }
 
 struct Tcl_AsyncHandler_;
@@ -220,6 +226,8 @@ struct Tcl_Trace_;
 alias Tcl_Trace = Tcl_Trace_*;
 struct Tcl_Var_;
 alias Tcl_Var = Tcl_Var_*;
+struct Tcl_ZLibStream_;
+alias Tcl_ZLibStream = Tcl_ZLibStream_*;
 
 /*
  * Definition of the interface to functions implementing threads. A function
@@ -492,10 +500,17 @@ struct Tcl_Obj
 		}
 		twoPtrValue_ twoPtrValue;
 
-		static struct ptrAndLongRep_ /*   - internal rep as a wide int, tightly packed fields. */
+		/*- internal rep as a pointer and a long,
+		* the main use of which is a bignum's
+		* tightly packed fields, where the alloc,
+		* used and signum flags are packed into a
+		* single word with everything else hung
+		* off the pointer.
+		*/
+		static struct ptrAndLongRep_
 		{
-			void* ptr;               /* Pointer to digits. */
-			c_ulong value;           /* Alloc, used, and signum packed into a single word. */
+			void* ptr;
+			c_ulong value;
 		}
 		ptrAndLongRep_ ptrAndLongRep;
     }
@@ -717,10 +732,12 @@ enum TCL_EXACT = 1;
  *				o Don't reset the flags controlling ensemble
  *				  error message rewriting.
  */
-enum TCL_NO_EVAL     = 0x10000;
-enum TCL_EVAL_GLOBAL = 0x20000;
-enum TCL_EVAL_DIRECT = 0x40000;
-enum TCL_EVAL_INVOKE = 0x80000;
+enum TCL_NO_EVAL       = 0x010000;
+enum TCL_EVAL_GLOBAL   = 0x020000;
+enum TCL_EVAL_DIRECT   = 0x040000;
+enum TCL_EVAL_INVOKE   = 0x080000;
+enum TCL_CANCEL_UNWIND = 0x100000;
+enum TCL_EVAL_NOERR    = 0x200000;
 
 /*
  * Special freeProc values that may be passed to Tcl_SetResult (see the man
@@ -732,6 +749,8 @@ enum TCL_DYNAMIC  = (cast(Tcl_FreeProc)3);
 
 /*
  * Flag values passed to variable-related functions.
+ * WARNING: these bit choices must not conflict with the bit choice for
+ * TCL_CANCEL_UNWIND, above.
  */
 enum TCL_GLOBAL_ONLY          = 1;
 enum TCL_NAMESPACE_ONLY       = 2;
@@ -744,9 +763,9 @@ enum TCL_TRACE_DESTROYED      = 0x80;
 enum TCL_INTERP_DESTROYED     = 0x100;
 enum TCL_LEAVE_ERR_MSG        = 0x200;
 enum TCL_TRACE_ARRAY          = 0x800;
-/* Required to support old variable/vdelete/vinfo traces */
+/* Required to support old variable/vdelete/vinfo traces. */
 enum TCL_TRACE_OLD_STYLE      = 0x1000;
-/* Indicate the semantics of the result of a trace */
+/* Indicate the semantics of the result of a trace. */
 enum TCL_TRACE_RESULT_DYNAMIC = 0x8000;
 enum TCL_TRACE_RESULT_OBJECT  = 0x10000;
 
@@ -848,7 +867,7 @@ struct Tcl_HashEntry
 
 		/* String for key. The actual size will be as
 		 * large as needed to hold the key. */
-		char[4] string_;
+		char[1] string_;
     }			
 
 	/* MUST BE LAST FIELD IN RECORD!! */
@@ -1006,10 +1025,10 @@ struct Tcl_HashSearch
  * same as TCL_CUSTOM_PTR_KEYS because they simply determine how the key is
  * accessed from the entry and not the behaviour.
  */
-enum TCL_STRING_KEYS      = 0;
-enum TCL_ONE_WORD_KEYS    = 1;
-enum TCL_CUSTOM_TYPE_KEYS = -2;
-enum TCL_CUSTOM_PTR_KEYS  = -1;
+enum TCL_STRING_KEYS      = (0);
+enum TCL_ONE_WORD_KEYS    = (1);
+enum TCL_CUSTOM_TYPE_KEYS = (-2);
+enum TCL_CUSTOM_PTR_KEYS  = (-1);
 
 /*
  * Structure definition for information used to keep track of searches through
@@ -1076,8 +1095,8 @@ struct Tcl_Time
     c_long usec; /* Microseconds. */
 }
 
-alias extern(C) void function(Tcl_Time* timePtr) nothrow Tcl_SetTimerProc;
-alias extern(C) int function(Tcl_Time* timePtr) nothrow Tcl_WaitForEventProc;
+alias extern(C) void function(const(Tcl_Time)* timePtr) nothrow Tcl_SetTimerProc;
+alias extern(C) int function(const(Tcl_Time)* timePtr) nothrow Tcl_WaitForEventProc;
 
 /*
  * TIP #233 (Virtualized Time)
@@ -1594,78 +1613,8 @@ struct Tcl_NotifierProcs
 }
 
 /*
- * The following structure represents a user-defined encoding. It collects
- * together all the functions that are used by the specific encoding.
- */
-struct Tcl_EncodingType
-{
-	/* The name of the encoding, e.g. "euc-jp".
-	 * This name is the unique key for this
-	 * encoding type. */
-	const(char)* encodingName;
-
-	/* Function to convert from external encoding
-	 * into UTF-8. */
-	Tcl_EncodingConvertProc toUtfProc;
-
-	/* Function to convert from UTF-8 into
-	 * external encoding. */
-	Tcl_EncodingConvertProc fromUtfProc;
-
-	/* If non-NULL, function to call when this
-	 * encoding is deleted. */
-	Tcl_EncodingFreeProc freeProc;
-
-	/* Arbitrary value associated with encoding
-	 * type. Passed to conversion functions. */
-	ClientData clientData;
-
-	/* Number of zero bytes that signify
-	 * end-of-string in this encoding. This number
-	 * is used to determine the source string
-	 * length when the srcLen argument is
-	 * negative. Must be 1 or 2. */
-	int nullSize;
-}
-
-/*
- * The following definitions are used as values for the conversion control
- * flags argument when converting text from one character set to another:
- *
- * TCL_ENCODING_START - Signifies that the source buffer is the first
- *				block in a (potentially multi-block) input
- *				stream. Tells the conversion function to reset
- *				to an initial state and perform any
- *				initialization that needs to occur before the
- *				first byte is converted. If the source buffer
- *				contains the entire input stream to be
- *				converted, this flag should be set.
- * TCL_ENCODING_END - Signifies that the source buffer is the last
- *				block in a (potentially multi-block) input
- *				stream. Tells the conversion routine to
- *				perform any finalization that needs to occur
- *				after the last byte is converted and then to
- *				reset to an initial state. If the source
- *				buffer contains the entire input stream to be
- *				converted, this flag should be set.
- * TCL_ENCODING_STOPONERROR - If set, then the converter will return
- *				immediately upon encountering an invalid byte
- *				sequence or a source character that has no
- *				mapping in the target encoding. If clear, then
- *				the converter will skip the problem,
- *				substituting one or more "close" characters in
- *				the destination buffer and then continue to
- *				convert the source.
- */
-enum TCL_ENCODING_START       = 0x01;
-enum TCL_ENCODING_END         = 0x02;
-enum TCL_ENCODING_STOPONERROR = 0x04;
-
-/*
  * The following data structures and declarations are for the new Tcl parser.
- */
-
-/*
+ *
  * For each word of a command, and for each piece of a word such as a variable
  * reference, one of the following structures is created to describe the
  * token.
@@ -1875,6 +1824,74 @@ struct Tcl_Parse
 }
 
 /*
+ * The following structure represents a user-defined encoding. It collects
+ * together all the functions that are used by the specific encoding.
+ */
+struct Tcl_EncodingType
+{
+	/* The name of the encoding, e.g. "euc-jp".
+	 * This name is the unique key for this
+	 * encoding type. */
+	const(char)* encodingName;
+
+	/* Function to convert from external encoding
+	 * into UTF-8. */
+	Tcl_EncodingConvertProc toUtfProc;
+
+	/* Function to convert from UTF-8 into
+	 * external encoding. */
+	Tcl_EncodingConvertProc fromUtfProc;
+
+	/* If non-NULL, function to call when this
+	 * encoding is deleted. */
+	Tcl_EncodingFreeProc freeProc;
+
+	/* Arbitrary value associated with encoding
+	 * type. Passed to conversion functions. */
+	ClientData clientData;
+
+	/* Number of zero bytes that signify
+	 * end-of-string in this encoding. This number
+	 * is used to determine the source string
+	 * length when the srcLen argument is
+	 * negative. Must be 1 or 2. */
+	int nullSize;
+}
+
+/*
+ * The following definitions are used as values for the conversion control
+ * flags argument when converting text from one character set to another:
+ *
+ * TCL_ENCODING_START - Signifies that the source buffer is the first
+ *				block in a (potentially multi-block) input
+ *				stream. Tells the conversion function to reset
+ *				to an initial state and perform any
+ *				initialization that needs to occur before the
+ *				first byte is converted. If the source buffer
+ *				contains the entire input stream to be
+ *				converted, this flag should be set.
+ * TCL_ENCODING_END - Signifies that the source buffer is the last
+ *				block in a (potentially multi-block) input
+ *				stream. Tells the conversion routine to
+ *				perform any finalization that needs to occur
+ *				after the last byte is converted and then to
+ *				reset to an initial state. If the source
+ *				buffer contains the entire input stream to be
+ *				converted, this flag should be set.
+ * TCL_ENCODING_STOPONERROR - If set, then the converter will return
+ *				immediately upon encountering an invalid byte
+ *				sequence or a source character that has no
+ *				mapping in the target encoding. If clear, then
+ *				the converter will skip the problem,
+ *				substituting one or more "close" characters in
+ *				the destination buffer and then continue to
+ *				convert the source.
+ */
+enum TCL_ENCODING_START       = 0x01;
+enum TCL_ENCODING_END         = 0x02;
+enum TCL_ENCODING_STOPONERROR = 0x04;
+
+/*
  * The following definitions are the error codes returned by the conversion
  * routines:
  *
@@ -1901,19 +1918,19 @@ struct Tcl_Parse
  *				encoding. This error is reported only if
  *				TCL_ENCODING_STOPONERROR was specified.
  */
-enum TCL_CONVERT_MULTIBYTE = -1;
-enum TCL_CONVERT_SYNTAX    = -2;
-enum TCL_CONVERT_UNKNOWN   = -3;
-enum TCL_CONVERT_NOSPACE   = -4;
+enum TCL_CONVERT_MULTIBYTE = (-1);
+enum TCL_CONVERT_SYNTAX    = (-2);
+enum TCL_CONVERT_UNKNOWN   = (-3);
+enum TCL_CONVERT_NOSPACE   = (-4);
 
 /*
  * The maximum number of bytes that are necessary to represent a single
- * Unicode character in UTF-8. The valid values should be 3 or 6 (or perhaps 1
- * if we want to support a non-unicode enabled core). If 3, then Tcl_UniChar
- * must be 2-bytes in size (UCS-2) (the default). If 6, then Tcl_UniChar must
- * be 4-bytes in size (UCS-4). At this time UCS-2 mode is the default and
- * recommended mode. UCS-4 is experimental and not recommended. It works for
- * the core, but most extensions expect UCS-2.
+ * Unicode character in UTF-8. The valid values should be 3, 4 or 6
+ * (or perhaps 1 if we want to support a non-unicode enabled core). If 3 or
+ * 4, then Tcl_UniChar must be 2-bytes in size (UCS-2) (the default). If 6,
+ * then Tcl_UniChar must be 4-bytes in size (UCS-4). At this time UCS-2 mode
+ * is the default and recommended mode. UCS-4 is experimental and not
+ * recommended. It works for the core, but most extensions expect UCS-2.
  */
 enum TCL_UTF_MAX = 3;
 
@@ -1963,8 +1980,106 @@ enum TCL_LIMIT_TIME     = 0x02;
 alias extern(C) void function(ClientData clientData, Tcl_Interp* interp) nothrow Tcl_LimitHandlerProc;
 alias extern(C) void function(ClientData clientData) nothrow Tcl_LimitHandlerDeleteProc;
 
+/*
+ * Override definitions for libtommath.
+ */
 struct mp_int;
 alias mp_digit = uint;
+
+/*
+ * Definitions needed for Tcl_ParseArgvObj routines.
+ * Based on tkArgv.c.
+ * Modifications from the original are copyright (c) Sam Bromley 2006
+ */
+
+struct Tcl_ArgvInfo
+{
+	/* Indicates the option type; see below. */
+    int type;
+
+	/* The key string that flags the option in the argv array. */
+    const(char)* keyStr;
+
+	/* Value to be used in setting dst; usage depends on type.*/
+    void* srcPtr;
+
+	/* Address of value to be modified; usage depends on type.*/
+    void* dstPtr;
+
+	/* Documentation message describing this option. */
+    const(char)* helpStr;
+
+	/* Word to pass to function callbacks. */
+    ClientData clientData;
+}
+
+/*
+ * Legal values for the type field of a Tcl_ArgInfo: see the user
+ * documentation for details.
+ */
+enum TCL_ARGV_CONSTANT = 15;
+enum TCL_ARGV_INT      = 16;
+enum TCL_ARGV_STRING   = 17;
+enum TCL_ARGV_REST     = 18;
+enum TCL_ARGV_FLOAT    = 19;
+enum TCL_ARGV_FUNC     = 20;
+enum TCL_ARGV_GENFUNC  = 21;
+enum TCL_ARGV_HELP     = 22;
+enum TCL_ARGV_END      = 23;
+
+/*
+ * Types of callback functions for the TCL_ARGV_FUNC and TCL_ARGV_GENFUNC
+ * argument types:
+ */
+alias extern(C) int function(ClientData clientData, Tcl_Obj* objPtr, void* dstPtr) nothrow Tcl_ArgvFuncProc;
+alias extern(C) int function(ClientData clientData, Tcl_Interp *interp, int objc, const(Tcl_Obj*)* objv, void *dstPtr) nothrow Tcl_ArgvGenFuncProc;
+
+/*
+ * Definitions needed for Tcl_Zlib routines. [TIP #234]
+ *
+ * Constants for the format flags describing what sort of data format is
+ * desired/expected for the Tcl_ZlibDeflate, Tcl_ZlibInflate and
+ * Tcl_ZlibStreamInit functions.
+ */
+enum TCL_ZLIB_FORMAT_RAW  = 1;
+enum TCL_ZLIB_FORMAT_ZLIB = 2;
+enum TCL_ZLIB_FORMAT_GZIP = 4;
+enum TCL_ZLIB_FORMAT_AUTO = 8;
+
+/*
+ * Constants that describe whether the stream is to operate in compressing or
+ * decompressing mode.
+ */
+enum TCL_ZLIB_STREAM_DEFLATE = 16;
+enum TCL_ZLIB_STREAM_INFLATE = 32;
+
+/*
+ * Constants giving compression levels. Use of TCL_ZLIB_COMPRESS_DEFAULT is
+ * recommended.
+ */
+enum TCL_ZLIB_COMPRESS_NONE    = 0;
+enum TCL_ZLIB_COMPRESS_FAST    = 1;
+enum TCL_ZLIB_COMPRESS_BEST    = 9;
+enum TCL_ZLIB_COMPRESS_DEFAULT = (-1);
+
+/*
+ * Constants for types of flushing, used with Tcl_ZlibFlush.
+ */
+enum TCL_ZLIB_NO_FLUSH  = 0;
+enum TCL_ZLIB_FLUSH     = 2;
+enum TCL_ZLIB_FULLFLUSH = 3;
+enum TCL_ZLIB_FINALIZE  = 4;
+
+/*
+ * Definitions needed for the Tcl_LoadFile function. [TIP #416]
+ */
+enum TCL_LOAD_GLOBAL = 1;
+enum TCL_LOAD_LAZY   = 2;
+
+/*
+ * Single public declaration for NRE.
+ */
+alias extern(C) int function(ClientData data[], Tcl_Interp* interp, int result) nothrow Tcl_NRPostProc;
 
 /*
  * The following constant is used to test for older versions of Tcl in the
@@ -1985,6 +2100,10 @@ extern(C) const(char)* Tcl_InitStubs(Tcl_Interp* interp, const(char)* version_, 
 extern(C) const(char)* TclTomMathInitializeStubs(Tcl_Interp* interp, const(char)* version_, int epoch, int revision) nothrow;
 
 /*
+ * When not using stubs, make it a macro.
+ */
+
+/*
  * TODO - tommath stubs export goes here!
  */
 
@@ -1992,7 +2111,12 @@ extern(C) const(char)* TclTomMathInitializeStubs(Tcl_Interp* interp, const(char)
  * Public functions that are not accessible via the stubs table.
  * Tcl_GetMemoryInfo is needed for AOLserver. [Bug 1868171]
  */
-extern(C) void Tcl_Main(int argc, const(char)** argv, Tcl_AppInitProc appInitProc) nothrow;
+extern(C) void Tcl_Main(int argc, const(char)** argv, Tcl_AppInitProc appInitProc) nothrow
+{
+	Tcl_MainEx(argc, argv, appInitProc, Tcl_CreateInterp());
+}
+
+extern(C) void Tcl_MainEx(int argc, const(char)** argv, Tcl_AppInitProc appInitProc, Tcl_Interp* interp) nothrow;
 extern(C) const(char)* Tcl_PkgInitStubsCheck(Tcl_Interp* interp, const(char)* version_, int exact) nothrow;
 extern(C) void Tcl_GetMemoryInfo(Tcl_DString* dsPtr) nothrow;
 
@@ -2015,27 +2139,27 @@ public import tcltk.tclplatdecls;
  */
 version(TCL_MEM_DEBUG)
 {
-	const(char)* ckalloc(uint size, string file = __FILE__, size_t line = __LINE__) nothrow
+	void* ckalloc(uint size, string file = __FILE__, size_t line = __LINE__) nothrow
 	{
 		return Tcl_DbCkalloc(size, cast(char*)file.toStringz, cast(int)line);
 	}
 
-	void ckfree(const(char)* ptr, string file = __FILE__, size_t line = __LINE__) nothrow
+	int ckfree(const(char)* ptr, string file = __FILE__, size_t line = __LINE__) nothrow
 	{
 		Tcl_DbCkfree(ptr, cast(char*)file.toStringz, cast(int)line);
 	}
 
-	const(char)* ckrealloc(const(char)* ptr, uint size, string file = __FILE__, size_t line = __LINE__) nothrow
+	void* ckrealloc(const(char)* ptr, uint size, string file = __FILE__, size_t line = __LINE__) nothrow
 	{
 		return Tcl_DbCkrealloc(ptr, size, cast(char*)file.toStringz, cast(int)line);
 	}
 
-	const(char)* attemptckalloc(uint size, string file = __FILE__, size_t line = __LINE__) nothrow
+	void* attemptckalloc(uint size, string file = __FILE__, size_t line = __LINE__) nothrow
 	{
 		return Tcl_AttemptDbCkalloc(size, cast(char*)file.toStringz, cast(int)line);
 	}
 
-	const(char)* attemptckrealloc(const(char)* ptr, uint size, string file = __FILE__, size_t line = __LINE__) nothrow
+	void* attemptckrealloc(const(char)* ptr, uint size, string file = __FILE__, size_t line = __LINE__) nothrow
 	{
 		return Tcl_AttemptDbCkrealloc(ptr, size, cast(char*)file.toStringz, cast(int)line);
 	}
@@ -2048,7 +2172,7 @@ else
 	 * memory allocator both inside and outside of the Tcl library.
 	 */
 
-	const(char)* ckalloc(uint size) nothrow
+	void* ckalloc(uint size) nothrow
 	{
 		return Tcl_Alloc(size);
 	}
@@ -2058,17 +2182,17 @@ else
 		Tcl_Free(ptr);
 	}
 
-	const(char)* ckrealloc(const(char)* ptr, uint size) nothrow
+	void* ckrealloc(const(char)* ptr, uint size) nothrow
 	{
 		return Tcl_Realloc(ptr, size);
 	}
 
-	const(char)* attemptckalloc(uint size) nothrow
+	void* attemptckalloc(uint size) nothrow
 	{
 		return Tcl_AttemptAlloc(size);
 	}
 
-	const(char)* attemptckrealloc(const(char)* ptr, uint size) nothrow
+	void* attemptckrealloc(const(char)* ptr, uint size) nothrow
 	{
 		return Tcl_AttemptRealloc(ptr, size);
 	}
@@ -2103,6 +2227,10 @@ version(TCL_MEM_DEBUG)
 }
 else
 {
+	// extern(C) void Tcl_IncrRefCount(Tcl_Obj* objPtr) nothrow;
+	// extern(C) void Tcl_DecrRefCount(Tcl_Obj* objPtr) nothrow;
+	// extern(C) int Tcl_IsShared(Tcl_Obj* objPtr) nothrow;
+
 	void Tcl_IncrRefCount(Tcl_Obj* objPtr) nothrow
 	{
 		++(*objPtr).refCount;
@@ -2193,13 +2321,27 @@ void Tcl_SetHashValue(Tcl_HashEntry* h, ClientData c) nothrow
 	(*h).clientData = c;
 }
 
-const(char)* Tcl_GetHashKey(Tcl_HashTable* tablePtr, Tcl_HashEntry* h) nothrow
+void* Tcl_GetHashKey(Tcl_HashTable* tablePtr, Tcl_HashEntry* h) nothrow
 {
 	if ((*tablePtr).keyType == TCL_ONE_WORD_KEYS || (*tablePtr).keyType == TCL_CUSTOM_PTR_KEYS)
 	{
-		return (*h).key.oneWordValue;
+		return cast(void*)(*h).key.oneWordValue;
 	}
-	return &((*h).key.string_[0]);
+	return cast(void*)&((*h).key.string_[0]);
+}
+
+/*
+ * Macros to use for clients to use to invoke find and create functions for
+ * hash tables:
+ */
+Tcl_HashEntry* Tcl_FindHashEntry(Tcl_HashTable* tablePtr, const(char)* key) nothrow
+{
+	return (*tablePtr).findProc(tablePtr, key);
+}
+
+Tcl_HashEntry* Tcl_CreateHashEntry(Tcl_HashTable* tablePtr, const(char)* key, int* newPtr)
+{
+	return (*tablePtr).createProc(tablePtr, key, newPtr);
 }
 
 /*

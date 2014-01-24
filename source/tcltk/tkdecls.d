@@ -33,7 +33,7 @@ extern(C) int Tk_CanvasPsStipple(Tcl_Interp* interp, Tk_Canvas canvas, Pixmap bi
 extern(C) double Tk_CanvasPsY(Tk_Canvas canvas, double y) nothrow;
 extern(C) void Tk_CanvasSetStippleOrigin(Tk_Canvas canvas, GC gc) nothrow;
 extern(C) int Tk_CanvasTagsParseProc(ClientData clientData, Tcl_Interp* interp, Tk_Window tkwin, const(char)* value, void* widgRec, int offset) nothrow;
-extern(C) void* Tk_CanvasTagsPrintProc(ClientData clientData, Tk_Window tkwin, void* widgRec, int offset, Tcl_FreeProc* freeProcPtr) nothrow;
+extern(C) const(char)* Tk_CanvasTagsPrintProc(ClientData clientData, Tk_Window tkwin, void* widgRec, int offset, Tcl_FreeProc* freeProcPtr) nothrow;
 extern(C) Tk_Window Tk_CanvasTkwin(Tk_Canvas canvas) nothrow;
 extern(C) void Tk_CanvasWindowCoords(Tk_Canvas canvas, double x, double y, short* screenXPtr, short* screenYPtr) nothrow;
 extern(C) void Tk_ChangeWindowAttributes(Tk_Window tkwin, c_ulong valueMask, XSetWindowAttributes* attsPtr) nothrow;
@@ -41,9 +41,9 @@ extern(C) int Tk_CharBbox(Tk_TextLayout layout, int index, int* xPtr, int* yPtr,
 extern(C) void Tk_ClearSelection(Tk_Window tkwin, Atom selection) nothrow;
 extern(C) int Tk_ClipboardAppend(Tcl_Interp* interp, Tk_Window tkwin, Atom target, Atom format, ubyte* buffer) nothrow;
 extern(C) int Tk_ClipboardClear(Tcl_Interp* interp, Tk_Window tkwin) nothrow;
-extern(C) int Tk_ConfigureInfo(Tcl_Interp* interp, Tk_Window tkwin, Tk_ConfigSpec* specs, void* widgRec, const(char)* argvName, int flags) nothrow;
-extern(C) int Tk_ConfigureValue(Tcl_Interp* interp, Tk_Window tkwin, Tk_ConfigSpec* specs, void* widgRec, const(char)* argvName, int flags) nothrow;
-extern(C) int Tk_ConfigureWidget(Tcl_Interp* interp, Tk_Window tkwin, Tk_ConfigSpec* specs, int argc, const(char)** argv, void* widgRec, int flags) nothrow;
+extern(C) int Tk_ConfigureInfo(Tcl_Interp* interp, Tk_Window tkwin, const(Tk_ConfigSpec)* specs, void* widgRec, const(char)* argvName, int flags) nothrow;
+extern(C) int Tk_ConfigureValue(Tcl_Interp* interp, Tk_Window tkwin, const(Tk_ConfigSpec)* specs, void* widgRec, const(char)* argvName, int flags) nothrow;
+extern(C) int Tk_ConfigureWidget(Tcl_Interp* interp, Tk_Window tkwin, const(Tk_ConfigSpec)* specs, int argc, const(char)** argv, void* widgRec, int flags) nothrow;
 extern(C) void Tk_ConfigureWindow(Tk_Window tkwin, uint valueMask, XWindowChanges* valuePtr) nothrow;
 extern(C) Tk_TextLayout Tk_ComputeTextLayout(Tk_Font font, const(char)* str, int numChars, int wrapLength, Tk_Justify justify, int flags, int* widthPtr, int* heightPtr) nothrow;
 extern(C) Tk_Window Tk_CoordsToWindow(int rootX, int rootY, Tk_Window tkwin) nothrow;
@@ -52,13 +52,13 @@ extern(C) Tk_BindingTable Tk_CreateBindingTable(Tcl_Interp* interp) nothrow;
 extern(C) Tk_ErrorHandler Tk_CreateErrorHandler(Display* display, int errNum, int request, int minorCode, Tk_ErrorProc errorProc, ClientData clientData) nothrow;
 extern(C) void Tk_CreateEventHandler(Tk_Window token, c_ulong mask, Tk_EventProc proc, ClientData clientData) nothrow;
 extern(C) void Tk_CreateGenericHandler(Tk_GenericProc proc, ClientData clientData) nothrow;
-extern(C) void Tk_CreateImageType(Tk_ImageType* typePtr) nothrow;
+extern(C) void Tk_CreateImageType(const(Tk_ImageType)* typePtr) nothrow;
 extern(C) void Tk_CreateItemType(Tk_ItemType* typePtr) nothrow;
-extern(C) void Tk_CreatePhotoImageFormat( Tk_PhotoImageFormat* formatPtr) nothrow;
+extern(C) void Tk_CreatePhotoImageFormat(const(Tk_PhotoImageFormat)* formatPtr) nothrow;
 extern(C) void Tk_CreateSelHandler(Tk_Window tkwin, Atom selection, Atom target, Tk_SelectionProc proc, ClientData clientData, Atom format) nothrow;
 extern(C) Tk_Window Tk_CreateWindow(Tcl_Interp* interp, Tk_Window parent, const(char)* name, const(char)* screenName) nothrow;
 extern(C) Tk_Window Tk_CreateWindowFromPath(Tcl_Interp* interp, Tk_Window tkwin, const(char)* pathName, const(char)* screenName) nothrow;
-extern(C) int Tk_DefineBitmap(Tcl_Interp* interp, const(char)* name, const(char)* source, int width, int height) nothrow;
+extern(C) int Tk_DefineBitmap(Tcl_Interp* interp, const(char)* name, const(void)* source, int width, int height) nothrow;
 extern(C) void Tk_DefineCursor(Tk_Window window, Tk_Cursor cursor) nothrow;
 extern(C) void Tk_DeleteAllBindings(Tk_BindingTable bindingTable, ClientData object) nothrow;
 extern(C) int Tk_DeleteBinding(Tcl_Interp* interp, Tk_BindingTable bindingTable, ClientData object, const(char)* eventStr) nothrow;
@@ -88,7 +88,7 @@ extern(C) void Tk_FreeCursor(Display* display, Tk_Cursor cursor) nothrow;
 extern(C) void Tk_FreeFont(Tk_Font f) nothrow;
 extern(C) void Tk_FreeGC(Display* display, GC gc) nothrow;
 extern(C) void Tk_FreeImage(Tk_Image image) nothrow;
-extern(C) void Tk_FreeOptions(Tk_ConfigSpec* specs, void* widgRec, Display* display, int needFlags) nothrow;
+extern(C) void Tk_FreeOptions(const(Tk_ConfigSpec)* specs, void* widgRec, Display* display, int needFlags) nothrow;
 extern(C) void Tk_FreePixmap(Display* display, Pixmap pixmap) nothrow;
 extern(C) void Tk_FreeTextLayout(Tk_TextLayout textLayout) nothrow;
 extern(C) void Tk_FreeXId(Display* display, XID xid) nothrow;
@@ -100,7 +100,7 @@ extern(C) int Tk_GetAnchor(Tcl_Interp* interp, const(char)* str, Tk_Anchor* anch
 extern(C) const(char)* Tk_GetAtomName(Tk_Window tkwin, Atom atom) nothrow;
 extern(C) const(char)* Tk_GetBinding(Tcl_Interp* interp, Tk_BindingTable bindingTable, ClientData object, const(char)* eventStr) nothrow;
 extern(C) Pixmap Tk_GetBitmap(Tcl_Interp* interp, Tk_Window tkwin, const(char)* str) nothrow;
-extern(C) Pixmap Tk_GetBitmapFromData(Tcl_Interp* interp, Tk_Window tkwin, const(char)* source, int width, int height) nothrow;
+extern(C) Pixmap Tk_GetBitmapFromData(Tcl_Interp* interp, Tk_Window tkwin, const(void)* source, int width, int height) nothrow;
 extern(C) int Tk_GetCapStyle(Tcl_Interp* interp, const(char)* str, int* capPtr) nothrow;
 extern(C) XColor* Tk_GetColor(Tcl_Interp* interp, Tk_Window tkwin, Tk_Uid name) nothrow;
 extern(C) XColor* Tk_GetColorByValue(Tk_Window tkwin, XColor* colorPtr) nothrow;
@@ -112,7 +112,7 @@ extern(C) Tk_Font Tk_GetFontFromObj(Tk_Window tkwin, Tcl_Obj* objPtr) nothrow;
 extern(C) void Tk_GetFontMetrics(Tk_Font font, Tk_FontMetrics* fmPtr) nothrow;
 extern(C) GC Tk_GetGC(Tk_Window tkwin, c_ulong valueMask, XGCValues* valuePtr) nothrow;
 extern(C) Tk_Image Tk_GetImage(Tcl_Interp* interp, Tk_Window tkwin, const(char)* name, Tk_ImageChangedProc changeProc, ClientData clientData) nothrow;
-extern(C) ClientData Tk_GetImageMasterData(Tcl_Interp* interp, const(char)* name, Tk_ImageType** typePtrPtr) nothrow;
+extern(C) ClientData Tk_GetImageMasterData(Tcl_Interp* interp, const(char)* name, const(Tk_ImageType)** typePtrPtr) nothrow;
 extern(C) Tk_ItemType* Tk_GetItemTypes() nothrow;
 extern(C) int Tk_GetJoinStyle(Tcl_Interp* interp, const(char)* str, int* joinPtr) nothrow;
 extern(C) int Tk_GetJustify(Tcl_Interp* interp, const(char)* str, Tk_Justify* justifyPtr) nothrow;
@@ -157,7 +157,7 @@ extern(C) const(char)* Tk_NameOfJustify(Tk_Justify justify) nothrow;
 extern(C) const(char)* Tk_NameOfRelief(int relief) nothrow;
 extern(C) Tk_Window Tk_NameToWindow(Tcl_Interp* interp, const(char)* pathName, Tk_Window tkwin) nothrow;
 extern(C) void Tk_OwnSelection(Tk_Window tkwin, Atom selection, Tk_LostSelProc proc, ClientData clientData) nothrow;
-extern(C) int Tk_ParseArgv(Tcl_Interp* interp, Tk_Window tkwin, int* argcPtr, const(char)** argv, Tk_ArgvInfo* argTable, int flags) nothrow;
+extern(C) int Tk_ParseArgv(Tcl_Interp* interp, Tk_Window tkwin, int* argcPtr, const(char)** argv, const(Tk_ArgvInfo)* argTable, int flags) nothrow;
 extern(C) void Tk_PhotoPutBlock_NoComposite(Tk_PhotoHandle handle, Tk_PhotoImageBlock* blockPtr, int x, int y, int width, int height) nothrow;
 extern(C) void Tk_PhotoPutZoomedBlock_NoComposite( Tk_PhotoHandle handle, Tk_PhotoImageBlock* blockPtr, int x, int y, int width, int height, int zoomX, int zoomY, int subsampleX, int subsampleY) nothrow;
 extern(C) int Tk_PhotoGetImage(Tk_PhotoHandle handle, Tk_PhotoImageBlock* blockPtr) nothrow;
@@ -231,7 +231,7 @@ extern(C) void Tk_RestoreSavedOptions(Tk_SavedOptions* savePtr) nothrow;
 extern(C) int Tk_SetOptions(Tcl_Interp* interp, void* recordPtr, Tk_OptionTable optionTable, int objc, const(Tcl_Obj*)[] objv, Tk_Window tkwin, Tk_SavedOptions* savePtr, int* maskPtr) nothrow;
 extern(C) void Tk_InitConsoleChannels(Tcl_Interp* interp) nothrow;
 extern(C) int Tk_CreateConsoleWindow(Tcl_Interp* interp) nothrow;
-extern(C) void Tk_CreateSmoothMethod(Tcl_Interp* interp, Tk_SmoothMethod* method) nothrow;
+extern(C) void Tk_CreateSmoothMethod(Tcl_Interp* interp, const(Tk_SmoothMethod)* method) nothrow;
 extern(C) int Tk_GetDash(Tcl_Interp* interp, const(char)* value, Tk_Dash* dash) nothrow;
 extern(C) void Tk_CreateOutline(Tk_Outline* outline) nothrow;
 extern(C) void Tk_DeleteOutline(Display* display, Tk_Outline* outline) nothrow;
@@ -254,7 +254,7 @@ extern(C) int Tk_PostscriptPhoto(Tcl_Interp* interp, Tk_PhotoImageBlock* blockPt
 extern(C) void Tk_CreateClientMessageHandler( Tk_ClientMessageProc proc) nothrow;
 extern(C) void Tk_DeleteClientMessageHandler( Tk_ClientMessageProc proc) nothrow;
 extern(C) Tk_Window Tk_CreateAnonymousWindow(Tcl_Interp* interp, Tk_Window parent, const(char)* screenName) nothrow;
-extern(C) void Tk_SetClassProcs(Tk_Window tkwin, Tk_ClassProcs* procs, ClientData instanceData) nothrow;
+extern(C) void Tk_SetClassProcs(Tk_Window tkwin, const(Tk_ClassProcs)* procs, ClientData instanceData) nothrow;
 extern(C) void Tk_SetInternalBorderEx(Tk_Window tkwin, int left, int right, int top, int bottom) nothrow;
 extern(C) void Tk_SetMinimumRequestSize(Tk_Window tkwin, int minWidth, int minHeight) nothrow;
 extern(C) void Tk_SetCaretPos(Tk_Window tkwin, int x, int y, int height) nothrow;
@@ -284,8 +284,8 @@ extern(C) int Tk_PhotoSetSize(Tcl_Interp* interp, Tk_PhotoHandle handle, int wid
 extern(C) c_long Tk_GetUserInactiveTime(Display* dpy) nothrow;
 extern(C) void Tk_ResetUserInactiveTime(Display* dpy) nothrow;
 extern(C) Tcl_Interp* Tk_Interp(Tk_Window tkwin) nothrow;
-extern(C) void Tk_CreateOldImageType(Tk_ImageType* typePtr) nothrow;
-extern(C) void Tk_CreateOldPhotoImageFormat( Tk_PhotoImageFormat* formatPtr) nothrow;
+extern(C) void Tk_CreateOldImageType(const(Tk_ImageType)* typePtr) nothrow;
+extern(C) void Tk_CreateOldPhotoImageFormat(const(Tk_PhotoImageFormat)* formatPtr) nothrow;
 
 struct TkPlatStubs;
 struct TkIntStubs;
@@ -294,16 +294,16 @@ struct TkIntXlibStubs;
 
 struct TkStubHooks
 {
-    TkPlatStubs* tkPlatStubs;
-    TkIntStubs* tkIntStubs;
-    TkIntPlatStubs* tkIntPlatStubs;
-    TkIntXlibStubs* tkIntXlibStubs;
+    const(TkPlatStubs)* tkPlatStubs;
+    const(TkIntStubs)* tkIntStubs;
+    const(TkIntPlatStubs)* tkIntPlatStubs;
+    const(TkIntXlibStubs)* tkIntXlibStubs;
 }
 
 struct TkStubs
 {
 	int magic;
-	TkStubHooks* hooks;
+	const(TkStubHooks)* hooks;
 
 	extern(C) void function() nothrow tk_MainLoop;
 	extern(C) XColor* function(Tk_3DBorder border) nothrow tk_3DBorderColor;
@@ -324,7 +324,7 @@ struct TkStubs
 	extern(C) double function(Tk_Canvas canvas, double y) nothrow tk_CanvasPsY;
 	extern(C) void function(Tk_Canvas canvas, GC gc) nothrow tk_CanvasSetStippleOrigin;
 	extern(C) int function(ClientData clientData, Tcl_Interp* interp, Tk_Window tkwin, const(char)* value, void* widgRec, int offset) nothrow tk_CanvasTagsParseProc;
-	extern(C) void* function(ClientData clientData, Tk_Window tkwin, void* widgRec, int offset, Tcl_FreeProc* freeProcPtr) nothrow tk_CanvasTagsPrintProc;
+	extern(C) const(char)* function(ClientData clientData, Tk_Window tkwin, void* widgRec, int offset, Tcl_FreeProc* freeProcPtr) nothrow tk_CanvasTagsPrintProc;
 	extern(C) Tk_Window function(Tk_Canvas canvas) nothrow tk_CanvasTkwin;
 	extern(C) void function(Tk_Canvas canvas, double x, double y, short* screenXPtr, short* screenYPtr) nothrow tk_CanvasWindowCoords;
 	extern(C) void function(Tk_Window tkwin, c_ulong valueMask, XSetWindowAttributes* attsPtr) nothrow tk_ChangeWindowAttributes;
@@ -332,9 +332,9 @@ struct TkStubs
 	extern(C) void function(Tk_Window tkwin, Atom selection) nothrow tk_ClearSelection;
 	extern(C) int function(Tcl_Interp* interp, Tk_Window tkwin, Atom target, Atom format, ubyte* buffer) nothrow tk_ClipboardAppend;
 	extern(C) int function(Tcl_Interp* interp, Tk_Window tkwin) nothrow tk_ClipboardClear;
-	extern(C) int function(Tcl_Interp* interp, Tk_Window tkwin, Tk_ConfigSpec* specs, void* widgRec, const(char)* argvName, int flags) nothrow tk_ConfigureInfo;
-	extern(C) int function(Tcl_Interp* interp, Tk_Window tkwin, Tk_ConfigSpec* specs, void* widgRec, const(char)* argvName, int flags) nothrow tk_ConfigureValue;
-	extern(C) int function(Tcl_Interp* interp, Tk_Window tkwin, Tk_ConfigSpec* specs, int argc, const(char)** argv, void* widgRec, int flags) nothrow tk_ConfigureWidget;
+	extern(C) int function(Tcl_Interp* interp, Tk_Window tkwin, const(Tk_ConfigSpec)* specs, void* widgRec, const(char)* argvName, int flags) nothrow tk_ConfigureInfo;
+	extern(C) int function(Tcl_Interp* interp, Tk_Window tkwin, const(Tk_ConfigSpec)* specs, void* widgRec, const(char)* argvName, int flags) nothrow tk_ConfigureValue;
+	extern(C) int function(Tcl_Interp* interp, Tk_Window tkwin, const(Tk_ConfigSpec)* specs, int argc, const(char)** argv, void* widgRec, int flags) nothrow tk_ConfigureWidget;
 	extern(C) void function(Tk_Window tkwin, uint valueMask, XWindowChanges* valuePtr) nothrow tk_ConfigureWindow;
 	extern(C) Tk_TextLayout function(Tk_Font font, const(char)* str, int numChars, int wrapLength, Tk_Justify justify, int flags, int* widthPtr, int* heightPtr) nothrow tk_ComputeTextLayout;
 	extern(C) Tk_Window function(int rootX, int rootY, Tk_Window tkwin) nothrow tk_CoordsToWindow;
@@ -343,13 +343,13 @@ struct TkStubs
 	extern(C) Tk_ErrorHandler function(Display* display, int errNum, int request, int minorCode, Tk_ErrorProc errorProc, ClientData clientData) nothrow tk_CreateErrorHandler;
 	extern(C) void function(Tk_Window token, c_ulong mask, Tk_EventProc proc, ClientData clientData) nothrow tk_CreateEventHandler;
 	extern(C) void function(Tk_GenericProc proc, ClientData clientData) nothrow tk_CreateGenericHandler;
-	extern(C) void function(Tk_ImageType* typePtr) nothrow tk_CreateImageType;
+	extern(C) void function(const(Tk_ImageType)* typePtr) nothrow tk_CreateImageType;
 	extern(C) void function(Tk_ItemType* typePtr) nothrow tk_CreateItemType;
-	extern(C) void function(Tk_PhotoImageFormat* formatPtr) nothrow tk_CreatePhotoImageFormat;
+	extern(C) void function(const(Tk_PhotoImageFormat)* formatPtr) nothrow tk_CreatePhotoImageFormat;
 	extern(C) void function(Tk_Window tkwin, Atom selection, Atom target, Tk_SelectionProc proc, ClientData clientData, Atom format) nothrow tk_CreateSelHandler;
 	extern(C) Tk_Window function(Tcl_Interp* interp, Tk_Window parent, const(char)* name, const(char)* screenName) nothrow tk_CreateWindow;
 	extern(C) Tk_Window function(Tcl_Interp* interp, Tk_Window tkwin, const(char)* pathName, const(char)* screenName) nothrow tk_CreateWindowFromPath;
-	extern(C) int function(Tcl_Interp* interp, const(char)* name, const(char)* source, int width, int height) nothrow tk_DefineBitmap;
+	extern(C) int function(Tcl_Interp* interp, const(char)* name, const(void)* source, int width, int height) nothrow tk_DefineBitmap;
 	extern(C) void function(Tk_Window window, Tk_Cursor cursor) nothrow tk_DefineCursor;
 	extern(C) void function(Tk_BindingTable bindingTable, ClientData object) nothrow tk_DeleteAllBindings;
 	extern(C) int function(Tcl_Interp* interp, Tk_BindingTable bindingTable, ClientData object, const(char)* eventStr) nothrow tk_DeleteBinding;
@@ -379,7 +379,7 @@ struct TkStubs
 	extern(C) void function(Tk_Font f) nothrow tk_FreeFont;
 	extern(C) void function(Display* display, GC gc) nothrow tk_FreeGC;
 	extern(C) void function(Tk_Image image) nothrow tk_FreeImage;
-	extern(C) void function(Tk_ConfigSpec* specs, void* widgRec, Display* display, int needFlags) nothrow tk_FreeOptions;
+	extern(C) void function(const(Tk_ConfigSpec)* specs, void* widgRec, Display* display, int needFlags) nothrow tk_FreeOptions;
 	extern(C) void function(Display* display, Pixmap pixmap) nothrow tk_FreePixmap;
 	extern(C) void function(Tk_TextLayout textLayout) nothrow tk_FreeTextLayout;
 	extern(C) void function(Display* display, XID xid) nothrow tk_FreeXId;
@@ -391,7 +391,7 @@ struct TkStubs
 	extern(C) const(char)* function(Tk_Window tkwin, Atom atom) nothrow tk_GetAtomName;
 	extern(C) const(char)* function(Tcl_Interp* interp, Tk_BindingTable bindingTable, ClientData object, const(char)* eventStr) nothrow tk_GetBinding;
 	extern(C) Pixmap function(Tcl_Interp* interp, Tk_Window tkwin, const(char)* str) nothrow tk_GetBitmap;
-	extern(C) Pixmap function(Tcl_Interp* interp, Tk_Window tkwin, const(char)* source, int width, int height) nothrow tk_GetBitmapFromData;
+	extern(C) Pixmap function(Tcl_Interp* interp, Tk_Window tkwin, const(void)* source, int width, int height) nothrow tk_GetBitmapFromData;
 	extern(C) int function(Tcl_Interp* interp, const(char)* str, int* capPtr) nothrow tk_GetCapStyle;
 	extern(C) XColor* function(Tcl_Interp* interp, Tk_Window tkwin, Tk_Uid name) nothrow tk_GetColor;
 	extern(C) XColor* function(Tk_Window tkwin, XColor* colorPtr) nothrow tk_GetColorByValue;
@@ -403,7 +403,7 @@ struct TkStubs
 	extern(C) void function(Tk_Font font, Tk_FontMetrics* fmPtr) nothrow tk_GetFontMetrics;
 	extern(C) GC function(Tk_Window tkwin, c_ulong valueMask, XGCValues* valuePtr) nothrow tk_GetGC;
 	extern(C) Tk_Image function(Tcl_Interp* interp, Tk_Window tkwin, const(char)* name, Tk_ImageChangedProc changeProc, ClientData clientData) nothrow tk_GetImage;
-	extern(C) ClientData function(Tcl_Interp* interp, const(char)* name, Tk_ImageType** typePtrPtr) nothrow tk_GetImageMasterData;
+	extern(C) ClientData function(Tcl_Interp* interp, const(char)* name, const(Tk_ImageType)** typePtrPtr) nothrow tk_GetImageMasterData;
 	extern(C) Tk_ItemType* function() nothrow tk_GetItemTypes;
 	extern(C) int function(Tcl_Interp* interp, const(char)* str, int* joinPtr) nothrow tk_GetJoinStyle;
 	extern(C) int function(Tcl_Interp* interp, const(char)* str, Tk_Justify* justifyPtr) nothrow tk_GetJustify;
@@ -448,7 +448,7 @@ struct TkStubs
 	extern(C) const(char)* function(int relief) nothrow tk_NameOfRelief;
 	extern(C) Tk_Window function(Tcl_Interp* interp, const(char)* pathName, Tk_Window tkwin) nothrow tk_NameToWindow;
 	extern(C) void function(Tk_Window tkwin, Atom selection, Tk_LostSelProc proc, ClientData clientData) nothrow tk_OwnSelection;
-	extern(C) int function(Tcl_Interp* interp, Tk_Window tkwin, int* argcPtr, const(char)** argv, Tk_ArgvInfo* argTable, int flags) nothrow tk_ParseArgv;
+	extern(C) int function(Tcl_Interp* interp, Tk_Window tkwin, int* argcPtr, const(char)** argv, const(Tk_ArgvInfo)* argTable, int flags) nothrow tk_ParseArgv;
 	extern(C) void function(Tk_PhotoHandle handle, Tk_PhotoImageBlock* blockPtr, int x, int y, int width, int height) nothrow tk_PhotoPutBlock_NoComposite;
 	extern(C) void function(Tk_PhotoHandle handle, Tk_PhotoImageBlock* blockPtr, int x, int y, int width, int height, int zoomX, int zoomY, int subsampleX, int subsampleY) nothrow tk_PhotoPutZoomedBlock_NoComposite;
 	extern(C) int function(Tk_PhotoHandle handle, Tk_PhotoImageBlock* blockPtr) nothrow tk_PhotoGetImage;
@@ -522,7 +522,7 @@ struct TkStubs
 	extern(C) int function(Tcl_Interp* interp, void* recordPtr, Tk_OptionTable optionTable, int objc, const(Tcl_Obj*)[] objv, Tk_Window tkwin, Tk_SavedOptions* savePtr, int* maskPtr) nothrow tk_SetOptions;
 	extern(C) void function(Tcl_Interp* interp) nothrow tk_InitConsoleChannels;
 	extern(C) int function(Tcl_Interp* interp) nothrow tk_CreateConsoleWindow;
-	extern(C) void function(Tcl_Interp* interp, Tk_SmoothMethod* method) nothrow tk_CreateSmoothMethod;
+	extern(C) void function(Tcl_Interp* interp, const(Tk_SmoothMethod)* method) nothrow tk_CreateSmoothMethod;
 	void* reserved218;
 	void* reserved219;
 	extern(C) int function(Tcl_Interp* interp, const(char)* value, Tk_Dash* dash) nothrow Tk_GetDash;
@@ -547,7 +547,7 @@ struct TkStubs
 	extern(C) void function(Tk_ClientMessageProc proc) nothrow tk_CreateClientMessageHandler;
 	extern(C) void function(Tk_ClientMessageProc proc) nothrow tk_DeleteClientMessageHandler;
 	extern(C) Tk_Window function(Tcl_Interp* interp, Tk_Window parent, const(char)* screenName) nothrow tk_CreateAnonymousWindow;
-	extern(C) void function(Tk_Window tkwin, Tk_ClassProcs* procs, ClientData instanceData) nothrow tk_SetClassProcs;
+	extern(C) void function(Tk_Window tkwin, const(Tk_ClassProcs)* procs, ClientData instanceData) nothrow tk_SetClassProcs;
 	extern(C) void function(Tk_Window tkwin, int left, int right, int top, int bottom) nothrow tk_SetInternalBorderEx;
 	extern(C) void function(Tk_Window tkwin, int minWidth, int minHeight) nothrow tk_SetMinimumRequestSize;
 	extern(C) void function(Tk_Window tkwin, int x, int y, int height) nothrow tk_SetCaretPos;
@@ -577,8 +577,14 @@ struct TkStubs
 	extern(C) c_long function(Display* dpy) nothrow tk_GetUserInactiveTime;
 	extern(C) void function(Display* dpy) nothrow tk_ResetUserInactiveTime;
 	extern(C) Tcl_Interp* function(Tk_Window tkwin) nothrow tk_Interp;
-	extern(C) void function(Tk_ImageType* typePtr) nothrow tk_CreateOldImageType;
-	extern(C) void function(Tk_PhotoImageFormat *formatPtr) nothrow tk_CreateOldPhotoImageFormat;
+	extern(C) void function(const(Tk_ImageType)* typePtr) nothrow tk_CreateOldImageType;
+	extern(C) void function(const(Tk_PhotoImageFormat)* formatPtr) nothrow tk_CreateOldPhotoImageFormat;
 }
 
-extern(C) shared TkStubs* tkStubsPtr;
+extern(C) shared const(TkStubs)* tkStubsPtr;
+
+version(Windows)
+{
+	import core.stdc.stddef : wchar_t;
+	extern(C) void Tk_MainExW(int argc, wchar_t** argv, Tcl_AppInitProc appInitProc, Tcl_Interp* interp) nothrow;
+}

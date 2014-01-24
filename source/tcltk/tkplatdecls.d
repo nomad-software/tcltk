@@ -26,22 +26,27 @@ version(Windows)
 
 version(OSX)
 {
+	// extern(C) void Tk_MacOSXSetEmbedHandler(Tk_MacOSXEmbedRegisterWinProc registerWinProcPtr,
+	// 	Tk_MacOSXEmbedGetGrafPortProc getPortProcPtr,
+	// 	Tk_MacOSXEmbedMakeContainerExistProc containerExistProcPtr,
+	// 	Tk_MacOSXEmbedGetClipProc getClipProc,
+	// 	Tk_MacOSXEmbedGetOffsetInParentProc getOffsetProc) nothrow;
 	extern(C) void Tk_MacOSXTurnOffMenus();
 	extern(C) void Tk_MacOSXTkOwnsCursor(int tkOwnsIt);
 	extern(C) void TkMacOSXInitMenus(Tcl_Interp* interp);
 	extern(C) void TkMacOSXInitAppleEvents(Tcl_Interp* interp);
 	extern(C) void TkGenWMConfigureEvent(Tk_Window tkwin, int x, int y, int width, int height, int flags);
 	extern(C) void TkMacOSXInvalClipRgns(Tk_Window tkwin);
+	// extern(C) void* TkMacOSXGetDrawablePort(Drawable drawable);
+	// extern(C) void* TkMacOSXGetRootControl(Drawable drawable);
 	extern(C) void Tk_MacOSXSetupTkNotifier();
 	extern(C) int Tk_MacOSXIsAppInFront();
 }
 
-struct TkPlatStubHooks;
-
 struct TkPlatStubs
 {
 	int magic;
-	TkPlatStubHooks* hooks;
+	void* hooks;
 
 	version(Windows)
 	{
@@ -55,15 +60,22 @@ struct TkPlatStubs
 
 	version(OSX)
 	{
+		// extern(C) void function(Tk_MacOSXEmbedRegisterWinProc registerWinProcPtr,
+		// 		Tk_MacOSXEmbedGetGrafPortProc getPortProcPtr,
+		// 		Tk_MacOSXEmbedMakeContainerExistProc containerExistProcPtr,
+		// 		Tk_MacOSXEmbedGetClipProc getClipProc,
+		// 		Tk_MacOSXEmbedGetOffsetInParentProc getOffsetProc) nothrow tk_MacOSXSetEmbedHandler;
 		extern(C) void function() nothrow tk_MacOSXTurnOffMenus;
 		extern(C) void function(int tkOwnsIt) nothrow tk_MacOSXTkOwnsCursor;
 		extern(C) void function(Tcl_Interp* interp) nothrow tkMacOSXInitMenus;
 		extern(C) void function(Tcl_Interp* interp) nothrow tkMacOSXInitAppleEvents;
 		extern(C) void function(Tk_Window tkwin, int x, int y, int width, int height, int flags) nothrow tkGenWMConfigureEvent;
 		extern(C) void function(Tk_Window tkwin) nothrow tkMacOSXInvalClipRgns;
+		// extern(C) void* function(Drawable drawable) nothrow tkMacOSXGetDrawablePort;
+		// extern(C) void* function(Drawable drawable) nothrow tkMacOSXGetRootControl;
 		extern(C) void function() nothrow tk_MacOSXSetupTkNotifier;
 		extern(C) int function() nothrow tk_MacOSXIsAppInFront;
 	}
 }
 
-extern(C) shared TkPlatStubs* tkPlatStubsPtr;
+extern(C) shared const(TkPlatStubs)* tkPlatStubsPtr;

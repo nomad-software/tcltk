@@ -34,9 +34,7 @@ version (OSX)
 struct TclPlatStubs
 {
 	int magic;
-
-	struct TclPlatStubHooks;
-	TclPlatStubHooks* hooks;
+	void* hooks;
 
 	version (Windows)
 	{
@@ -52,4 +50,4 @@ struct TclPlatStubs
 	}
 }
 
-extern(C) shared TclPlatStubs* tclPlatStubsPtr;
+extern(C) shared const(TclPlatStubs)* tclPlatStubsPtr;
