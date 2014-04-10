@@ -10,8 +10,6 @@
 	"sourceFiles-windows-x86-ldc": ["lib/windows/x86/coff/tcl86.lib", "lib/windows/x86/coff/tk86.lib"],
 	"sourceFiles-windows-x86-gnu": ["lib/windows/x86/coff/tcl86.lib", "lib/windows/x86/coff/tk86.lib"],
 	"sourceFiles-windows-x86_64": ["lib/windows/x86_64/coff/tcl86.lib", "lib/windows/x86_64/coff/tk86.lib"],
-	"copyFiles-windows-x86": ["dist/x86/tcl86.dll", "dist/x86/tk86.dll", "dist/x86/zlib1.dll"],
-	"copyFiles-windows-x86_64": ["dist/x86_64/tcl86.dll", "dist/x86_64/tk86.dll", "dist/x86_64/zlib1.dll"],
 	"excludedSourceFiles": [
 		"source/c/*",
 	],
