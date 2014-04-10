@@ -6,6 +6,12 @@
 	"copyright": "Copyright (c) 2014 Gary Willoughby",
 	"license": "MIT",
 	"libs-posix": ["tcl", "tk"],
+	"sourceFiles-windows-x86-dmd": ["lib/windows/x86/omf/tcl86.lib", "lib/windows/x86/omf/tk86.lib"],
+	"sourceFiles-windows-x86-ldc": ["lib/windows/x86/coff/tcl86.lib", "lib/windows/x86/coff/tk86.lib"],
+	"sourceFiles-windows-x86-gnu": ["lib/windows/x86/coff/tcl86.lib", "lib/windows/x86/coff/tk86.lib"],
+	"sourceFiles-windows-x86_64": ["lib/windows/x86_64/coff/tcl86.lib", "lib/windows/x86_64/coff/tk86.lib"],
+	"copyFiles-windows-x86": ["dist/x86/tcl86.dll", "dist/x86/tk86.dll", "dist/x86/zlib1.dll"],
+	"copyFiles-windows-x86_64": ["dist/x86_64/tcl86.dll", "dist/x86_64/tk86.dll", "dist/x86_64/zlib1.dll"],
 	"excludedSourceFiles": [
 		"source/c/*",
 	],
@@ -15,26 +21,4 @@
 	"subConfigurations": {
 		"x11": "tcltk-import"
 	},
-	"configurations": [
-		{
-			"name": "library",
-			"targetType": "library",
-			"sourceFiles-windows-x86-dmd": ["lib/windows/x86/omf/standalone/tcl86t.lib", "lib/windows/x86/omf/standalone/tk86t.lib"],
-			"sourceFiles-windows-x86-ldc": ["lib/windows/x86/coff/standalone/tcl86t.lib", "lib/windows/x86/coff/standalone/tk86t.lib"],
-			"sourceFiles-windows-x86-gnu": ["lib/windows/x86/coff/standalone/tcl86t.lib", "lib/windows/x86/coff/standalone/tk86t.lib"],
-			"sourceFiles-windows-x86_64": ["lib/windows/x86_64/coff/standalone/tcl86t.lib", "lib/windows/x86_64/coff/standalone/tk86t.lib"],
-			"copyFiles-windows-x86": ["dist/x86/tcl86t.dll", "dist/x86/tk86t.dll"],
-			"copyFiles-windows-x86_64": ["dist/x86_64/tcl86t.dll", "dist/x86_64/tk86t.dll"],
-			"targetPath": "build/lib",
-		},
-		{
-			"name": "activetcl",
-			"targetType": "library",
-			"sourceFiles-windows-x86-dmd": ["lib/windows/x86/omf/activetcl/tcl86.lib", "lib/windows/x86/omf/activetcl/tk86.lib"],
-			"sourceFiles-windows-x86-ldc": ["lib/windows/x86/coff/activetcl/tcl86.lib", "lib/windows/x86/coff/activetcl/tk86.lib"],
-			"sourceFiles-windows-x86-gnu": ["lib/windows/x86/coff/activetcl/tcl86.lib", "lib/windows/x86/coff/activetcl/tk86.lib"],
-			"sourceFiles-windows-x86_64": ["lib/windows/x86_64/coff/activetcl/tcl86.lib", "lib/windows/x86_64/coff/activetcl/tk86.lib"],
-			"targetPath": "build/lib",
-		},
-	],
 }
