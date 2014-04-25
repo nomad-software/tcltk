@@ -1,4 +1,5 @@
-#tcltk **Bindings to Tcl/Tk for the D programming language**
+#tcltk
+**Bindings to Tcl/Tk for the D programming language**
 
 ---
 
