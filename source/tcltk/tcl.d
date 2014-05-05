@@ -2111,7 +2111,7 @@ extern(C) const(char)* TclTomMathInitializeStubs(Tcl_Interp* interp, const(char)
  * Public functions that are not accessible via the stubs table.
  * Tcl_GetMemoryInfo is needed for AOLserver. [Bug 1868171]
  */
-extern(C) void Tcl_Main(int argc, const(char)** argv, Tcl_AppInitProc appInitProc) nothrow
+void Tcl_Main(int argc, const(char)** argv, Tcl_AppInitProc appInitProc) nothrow
 {
 	Tcl_MainEx(argc, argv, appInitProc, Tcl_CreateInterp());
 }
