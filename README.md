@@ -5,8 +5,21 @@
 
 ## Tcl/Tk versions
 
-Tcl/Tk v8.6.1 is tagged supported in the master branch. Tcl/Tl v8.5.11 support
-is available via a tag.
+Tcl/Tk v8.6.1+ is tagged and supported in the master branch. Tcl/Tl v8.5.11 
+support is available via a tag.
+
+## Supported platforms
+These bindings have been developed with the latest DMD compiler. Other 
+compilers have not been tested but should build fine.
+
+### Linux
+Should build just fine.
+
+### Mac OSX
+Should build just fine.
+
+### Windows
+Should build just fine.
 
 ## Dependencies
 
@@ -24,7 +37,7 @@ function.
 
 ### Libraries
 
-Version **8.6.1** of the Tcl/Tk libraries or greater is required to be
+Version **8.6.1** of the Tcl/Tk libraries or greater is required to be 
 installed.
 
 #### Windows
