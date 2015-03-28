@@ -1549,7 +1549,7 @@ struct Tk_PhotoImageBlock
 	/* Address differences between the red, green,
 	 * blue and alpha components of the pixel and
 	 * the pixel as a whole. */
-	int offset[4];
+	int[4] offset;
 }
 
 /*

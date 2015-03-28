@@ -2079,7 +2079,7 @@ enum TCL_LOAD_LAZY   = 2;
 /*
  * Single public declaration for NRE.
  */
-alias extern(C) int function(ClientData data[], Tcl_Interp* interp, int result) nothrow Tcl_NRPostProc;
+alias extern(C) int function(ClientData[] data, Tcl_Interp* interp, int result) nothrow Tcl_NRPostProc;
 
 /*
  * The following constant is used to test for older versions of Tcl in the
