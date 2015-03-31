@@ -14,7 +14,7 @@
 		"source/c/*",
 	],
 	"dependencies": {
-		"x11": ">=1.0.0"
+		"x11": ">=1.0.6"
 	},
 	"subConfigurations": {
 		"x11": "tcltk-import"
